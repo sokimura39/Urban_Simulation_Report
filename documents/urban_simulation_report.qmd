@@ -1,0 +1,92 @@
+---
+title: Urban Simulation Report
+author: 'Student number: 23083053'
+bibliography: urban_simulation_report.bib
+csl: harvard-cite-them-right.csl
+execute:
+  echo: false
+format:
+  pdf:
+    include-in-header:
+      text: |
+        \addtokomafont{disposition}{\rmfamily}
+#    mainfont: Spectral
+#    sansfont: Roboto
+#    monofont: JetBrainsMono-Regular
+    fontsize: 12pt
+    papersize: a4
+    geometry:
+      - top=25mm
+      - left=25mm
+      - right=25mm
+      - bottom=25mm
+      - heightrounded
+    toc: false
+    number-sections: true
+    colorlinks: true
+    highlight-style: github
+jupyter:
+  jupytext:
+    text_representation:
+      extension: .qmd
+      format_name: quarto
+      format_version: '1.0'
+      jupytext_version: 1.15.2
+  kernelspec:
+    display_name: Python 3 (ipykernel)
+    language: python
+    name: python3
+---
+
+## Part 1: London's Underground Resilience
+
+
+
+
+## Part 2: Spatial Interaction Models
+
+In the second part, we will analyse the OD matrix of the London Underground.
+
+### Models and Calibration
+
+The family of spatial interaction models are as follows:
+
+**The unconstrained model** only constrains the model with matching the total flows with the observed value.
+
+$$
+T_{ij} = K O^{\alpha}_i D^{\gamma}_j f(c_{ij})
+$$
+
+**The singly constrained model** constrains the total number of observations for each component at the origin or the destination.
+
+
+The dataset used for analysis have the following data for every origin-destination pair for the London Underground Stations.
+
+- population of origin
+- jobs at the destination
+- distance between origin and destination
+- flow from the origin to the destination
+
+First, we will use the doubly constrained model to calibrate the parameters by comparing with the observed flow.
+
+#### Scenarios
+
+The scenarios we will observe in this report are as follows:
+
+| Scenario | Explanation |
+| :--- | :--- |
+| Scenario A | Jobs at Canary Wharf decrease by 50 % |
+| Scenario B | Increase in cost of transport - considering 2 parameters |
+
+: The scenarios to the status quo explored in this report.
+
+
+
+---
+
+Word count: x words
+GitHub repository: [Urban_Simulation_Report](https://github.com/sokimura39/Urban_Simulation_Report)
+
+
+
+
