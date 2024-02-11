@@ -67,7 +67,7 @@ The dataset used for analysis have the following data for every origin-destinati
 - distance between origin and destination
 - flow from the origin to the destination
 
-First, we will use the doubly constrained model to calibrate the parameters by comparing with the observed flow.
+First, we will use the doubly constrained model to estimate the best cost function and parameters by comparing with the observed flow. By conducting a doubly constrained model 
 
 #### Scenarios
 
