@@ -39,7 +39,9 @@ jupyter:
 
 ## Part 1: London's Underground Resilience
 
+### Topological Network
 
+### Flows: Weighted Network
 
 
 ## Part 2: Spatial Interaction Models
@@ -126,12 +128,17 @@ For each cost function, we have run the Poisson Regression to calculate the opti
 
 | Cost Function | Parameter $\beta$ | $R^2$ value |
 | --- | --- | --- |
-| Negative exponential $f(c_{ij}) = \exp(-\beta c_{ij})$ | $\beta = -1.543 \times 10^{-4}$ | $R^2 = 0.4979$ |
-| Inverse Power $f(c_{ij}) = c^{-\beta}_{ij}$ | $\beta = -9.096 \times 10^{-1}$ | $R^2 = 0.4077$ |
+| Negative exponential $f(c_{ij}) = \exp(-\beta c_{ij})$ | $\beta = 1.543 \times 10^{-4}$ | $R^2 = 0.4979$ |
+| Inverse Power $f(c_{ij}) = c^{-\beta}_{ij}$ | $\beta = 9.096 \times 10^{-1}$ | $R^2 = 0.4077$ |
 
-: Comparison of results for the doubly constrained model using inverse power and negative exponential cost functions
+: Comparison of results for the doubly constrained model using inverse power and negative exponential cost functions.
 
-From these results, the negative exponential model for the cost function 
+From these results, the negative exponential model for the cost function has a better fit to the observed flows. When considering the scenarios, the cost function
+$$
+f(c_{ij}) = \exp(-1.543 c_{ij})
+$$
+
+will be used.
 
 ### Scenarios
 
@@ -142,7 +149,24 @@ The scenarios we will observe in this report are as follows:
 | Scenario A | Jobs at Canary Wharf decrease by 50 % |
 | Scenario B | Increase in cost of transport - considering 2 parameters |
 
-: The scenarios to the status quo explored in this report.
+: The scenarios explored in this report.
+
+#### Scenario A
+
+We will first decrease the number of jobs at Canary Wharf by 50%, from the original 58,772 to 29,386. We will use the origin-constrained model to simulate this behaviour. The procedure is as follows:
+
+1. Calculate the flow based on the origin-constrained model $T_{ij} = A_i O_i D^{\gamma}_j \exp(-\beta c_{ij})$ to retrieve the optimal $\gamma$ value for this dataset. Values for parameter $\beta$ is determined upon calibration.
+2. Reduce the number of jobs at Canary Wharf (transform $D_j$ into $D'_j$)
+3. Recalibrate the adjusted $A'_i$ parameter with the new distribution of using the relationship $A'_i = \frac{1}{\sum_j D'^{\gamma}_j f(c_{ij})}$
+4. Calculate the new flows using the relationship $T'_{ij} = A'_i O_i D'^{\gamma}_j \exp(-\beta c_{ij})$
+
+#### Scenario B
+
+We will consider 2 scenarios for 
+
+
+#### Discussion
+
 
 
 
