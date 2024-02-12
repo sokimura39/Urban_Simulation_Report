@@ -10,9 +10,8 @@ format:
     include-in-header:
       text: |
         \addtokomafont{disposition}{\rmfamily}
-#    mainfont: Spectral
-#    sansfont: Roboto
-#    monofont: JetBrainsMono-Regular
+    mainfont: Spectral
+    sansfont: Roboto
     fontsize: 12pt
     papersize: a4
     geometry:
@@ -49,15 +48,52 @@ In the second part, we will analyse the OD matrix of the London Underground.
 
 ### Models and Calibration
 
+#### Family of Spatial Interaction Models
+
 The family of spatial interaction models are as follows:
 
-**The unconstrained model** only constrains the model with matching the total flows with the observed value.
+The **unconstrained model** only constrains the model with matching the total flows with the observed value, written as
 
 $$
 T_{ij} = K O^{\alpha}_i D^{\gamma}_j f(c_{ij})
 $$
 
-**The singly constrained model** constrains the total number of observations for each component at the origin or the destination.
+where $K$ is the constant
+
+$$
+K = \frac{T}{\sum_i \sum_j O^{\alpha}_i D^{\gamma}_j f(c_{ij})}
+$$
+
+so that the total number of journeys are constrained.
+
+The **singly constrained model** constrains the total number of observations for each component at the origin or the destination. The origin constrained model fixes the total number of journeys at the origin, as:
+
+$$
+T_{ij} = A_i O^{\alpha}_i D^{\gamma}_j f(c_{ij})
+$$
+
+The destination constrained model fixes the total number at the destination. The parameter $A_i$ is determined so that the total at the origin is constrained, that is:
+
+$$
+\sum_j T_{ij} = O_i \therefore A_i = \frac{1}{\sum_j D_j f(c_{ij})}
+$$
+
+Similarly, the **destination constrained model** constrains the total at the destination.
+
+$$
+\begin{gather}
+T_{ij} = O^{\alpha}_i B_j D^{\gamma}_j f(c_{ij}) \\
+\text{where} \left (B_j = \frac{1}{\sum_i O_i f(c_{ij})} \right)
+\end{gather}
+$$
+
+The **doubly constrained model** constrains both the total at the origin and destination.
+
+$$
+T_{ij} = A_i O^{\alpha}_i B_j D^{\gamma}_j \exp(-\beta c_{ij})
+$$
+
+#### Calibration
 
 The dataset used for analysis have the following data for every origin-destination pair for the London Underground Stations.
 
@@ -66,21 +102,38 @@ The dataset used for analysis have the following data for every origin-destinati
 - distance between origin and destination
 - flow from the origin to the destination
 
-First, we will use the doubly constrained model to estimate the best cost function and parameters by comparing with the observed flow. Constraining both the total journeys for both the origin and destination will enable the full utilisation of observed data, enabling a most accurate calibration of the cost function.
+Using this dataset, we will use the doubly constrained model to estimate the best cost function and parameters by comparing with the observed flow. Constraining both the total journeys for both the origin and destination will enable the full utilisation of observed data, enabling a most accurate calibration of the cost function.
+
+The doubly constrained model after a logarithm transformation into a Poisson expression can be written as:
+
+$$
+\begin{gather}
+\ln(T_{ij}) = \ln A_i + \ln O^{\alpha}_i + \ln B_j + \ln D^{\gamma}_j + \ln f(c_{ij}) \\
+\end{gather}
+$$
 
 We will compare the negative exponential and inverse power relationships as the cost function $f(d_{ij})$ as follows:
 
 $$
 f(d_{ij}) = 
 \begin{cases}
-\exp(-\beta d_{ij}) \text{ (Negative Exponential)} \\
-d^{-\beta}_{ij}  \text{ (Inverse Power)} 
+\exp(-\beta c_{ij}) \text{ (Negative Exponential)} \\
+c^{-\beta}_{ij}  \text{ (Inverse Power)} 
 \end{cases}
 $$
 
+For each cost function, we have run the Poisson Regression to calculate the optimal parameter $\beta$. 
 
+| Cost Function | Parameter $\beta$ | $R^2$ value |
+| --- | --- | --- |
+| Negative exponential $f(c_{ij}) = \exp(-\beta c_{ij})$ | $\beta = -1.543 \times 10^{-4}$ | $R^2 = 0.4979$ |
+| Inverse Power $f(c_{ij}) = c^{-\beta}_{ij}$ | $\beta = -9.096 \times 10^{-1}$ | $R^2 = 0.4077$ |
 
-#### Scenarios
+: Comparison of results for the doubly constrained model using inverse power and negative exponential cost functions
+
+From these results, the negative exponential model for the cost function 
+
+### Scenarios
 
 The scenarios we will observe in this report are as follows:
 
