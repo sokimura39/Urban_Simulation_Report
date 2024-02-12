@@ -59,7 +59,6 @@ $$
 
 **The singly constrained model** constrains the total number of observations for each component at the origin or the destination.
 
-
 The dataset used for analysis have the following data for every origin-destination pair for the London Underground Stations.
 
 - population of origin
@@ -67,7 +66,19 @@ The dataset used for analysis have the following data for every origin-destinati
 - distance between origin and destination
 - flow from the origin to the destination
 
-First, we will use the doubly constrained model to estimate the best cost function and parameters by comparing with the observed flow. By conducting a doubly constrained model 
+First, we will use the doubly constrained model to estimate the best cost function and parameters by comparing with the observed flow. Constraining both the total journeys for both the origin and destination will enable the full utilisation of observed data, enabling a most accurate calibration of the cost function.
+
+We will compare the negative exponential and inverse power relationships as the cost function $f(d_{ij})$ as follows:
+
+$$
+f(d_{ij}) = 
+\begin{cases}
+\exp(-\beta d_{ij}) \text{ (Negative Exponential)} \\
+d^{-\beta}_{ij}  \text{ (Inverse Power)} 
+\end{cases}
+$$
+
+
 
 #### Scenarios
 
@@ -85,8 +96,10 @@ The scenarios we will observe in this report are as follows:
 ---
 
 Word count: x words
-GitHub repository: [Urban_Simulation_Report](https://github.com/sokimura39/Urban_Simulation_Report)
+GitHub repository (as hyperlink): [Urban_Simulation_Report](https://github.com/sokimura39/Urban_Simulation_Report)
 
+{{< pagebreak >}}
 
+## References
 
 
