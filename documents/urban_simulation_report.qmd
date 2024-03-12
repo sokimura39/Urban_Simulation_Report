@@ -123,7 +123,7 @@ $$
 \end{gather}
 $$
 
-We will compare the negative exponential and inverse power relationships as the cost function $f(d_{ij})$ as follows:
+We will compare the negative exponential and inverse power relationships as the cost function $f(c_{ij})$ as follows:
 
 $$
 f(d_{ij}) = 
@@ -144,7 +144,10 @@ For each cost function, we have run the Poisson Regression to calculate the opti
 
 From these results, the negative exponential model for the cost function has a better fit to the observed flows. When considering the scenarios, the cost function
 $$
-f(c_{ij}) = \exp(-1.543 c_{ij})
+\begin{gather}
+f(c_{ij}) = \exp(-\beta c_{ij}) \\
+(\beta = -1.543 \times 10^{-4})
+\end{gather}
 $$
 
 will be used.
@@ -176,8 +179,17 @@ We have observed a significant drop in the number of
 
 #### Scenario B
 
-We will consider 2 scenarios for the change in the cost of transport - scenario B1 considers a 
+We will consider 2 scenarios for the change in the cost of transport. The parameters $\beta_1, \beta_2$ for the two scenarios B1 and B2 will be modified as follows.
 
+$$
+\begin{cases}
+\beta_1 = 2 \beta \\
+\beta_2 = 10 \beta
+\end{cases}
+\quad (\beta = -1.543 \times 10^{-4})
+$$
+
+![Distance decay function for the original scenario and the two modified scenarios.](img/dist_decay.png)
 
 #### Discussion
 
