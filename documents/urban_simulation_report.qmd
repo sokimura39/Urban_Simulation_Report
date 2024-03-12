@@ -39,7 +39,16 @@ jupyter:
 
 ## Part 1: London's Underground Resilience
 
+The first part of this report aims to address the resilience of the London Underground using network analysis.
+
 ### Topological Network
+
+#### Centrality Measures
+
+Centrality measures are characteristics of nodes showing their *importance* in various aspects. In this section, we will identify nodes on the network with the highest centrality in the following measurements: degree centrality, closeness centrality, and betweenness centrality.
+
+
+
 
 ### Flows: Weighted Network
 
@@ -160,9 +169,14 @@ We will first decrease the number of jobs at Canary Wharf by 50%, from the origi
 3. Recalibrate the adjusted $A'_i$ parameter with the new distribution of using the relationship $A'_i = \frac{1}{\sum_j D'^{\gamma}_j f(c_{ij})}$
 4. Calculate the new flows using the relationship $T'_{ij} = A'_i O_i D'^{\gamma}_j \exp(-\beta c_{ij})$
 
+The origin constrained model is used for the analysis to preserve the number of commuters starting their journeys in each area. We will observe how the destination of commuters changed in reaction to the decrease in jobs in Canary Wharf.
+
+We have observed a significant drop in the number of 
+
+
 #### Scenario B
 
-We will consider 2 scenarios for 
+We will consider 2 scenarios for the change in the cost of transport - scenario B1 considers a 
 
 
 #### Discussion
