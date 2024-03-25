@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Student number: 23083053">
+
+<title>Urban Simulation Report</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="urban_simulation_report_files/libs/clipboard/clipboard.min.js"></script>
+<script src="urban_simulation_report_files/libs/quarto-html/quarto.js"></script>
+<script src="urban_simulation_report_files/libs/quarto-html/popper.min.js"></script>
+<script src="urban_simulation_report_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="urban_simulation_report_files/libs/quarto-html/anchor.min.js"></script>
+<link href="urban_simulation_report_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="urban_simulation_report_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="urban_simulation_report_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="urban_simulation_report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="urban_simulation_report_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="..\urban_simulation_report.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Urban Simulation Report</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Student number: 23083053 </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="part-1-londons-underground-resilience" class="level2">
+<h2 class="anchored" data-anchor-id="part-1-londons-underground-resilience">Part 1: London’s Underground Resilience</h2>
+<p>The first part of this report aims to address the resilience of the London Underground using network analysis.</p>
+<section id="topological-network" class="level3">
+<h3 class="anchored" data-anchor-id="topological-network">Topological Network</h3>
+<section id="centrality-measures" class="level4">
+<h4 class="anchored" data-anchor-id="centrality-measures">Centrality Measures</h4>
+<p>Centrality measures are characteristics of nodes showing their <em>importance</em> in various aspects. In this section, we will identify nodes on the network with the highest centrality in the following measurements: degree centrality, closeness centrality, and betweenness centrality. The 3 central measures that I will cover in this report are: degree centrality, betweenness centrality, and closeness centrality. We will consider a network of <span class="math inline">\(n\)</span> nodes, and the number of links between nodes <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> will be denoted as <span class="math inline">\(A_{ij}\)</span>.</p>
+<p><strong>Degree centrality</strong> is the number of links that are connected to each node. Considering the underground as an undirected graph, the degree centrality <span class="math inline">\(k_i\)</span> for node <span class="math inline">\(i\)</span> is calculated as</p>
+<p><span class="math display">\[
+k_i = \sum_{j} A_{ij}
+\]</span></p>
+<p>In the context of the underground network, the degree corresponds to the number of lines that serve each station counting 1 for each direction. A high degree centrality indicates there are many lines that serve the station, thus identifies importance of the station as a transit hub that allows for transfer between multiple lines.</p>
+<p><strong>Betweenness centrality</strong> is defined by the number of shortest paths that run through the node (or link). The betweenness centrality <span class="math inline">\(x_i\)</span> can be calculated as</p>
+<p><span class="math display">\[
+x_i = \frac{1}{n^2} \sum_{st} \frac{n^i_{st}}{g_{st}}
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+n^i_{st} =
+\begin{cases}
+1 \quad (\text{if node } i \text{ is on geodesic from } s \text{ to }t)\\
+0 \quad (\text{otherwise})
+\end{cases}
+\]</span></p>
+<p>and <span class="math inline">\(g_{st}\)</span> is the total number of geodesic paths from <span class="math inline">\(s\)</span> to <span class="math inline">\(t\)</span>.</p>
+<p><strong>Closeness centrality</strong> is the inverse of the main geodesic distance <span class="math inline">\(l_i\)</span> of one node to all the other nodes. Given the geodesic distance between nodes <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> as <span class="math inline">\(d_{ij}\)</span>, the closeness centrality <span class="math inline">\(C_i\)</span> is calculated as</p>
+<p><span class="math display">\[
+C_i = \frac{1}{l_i} = \frac{n}{\sum_j d_{ij}}
+\]</span></p>
+<p>A high closeness centrality in a rail network indicates the station is within a short distance from all the other stations, located at the physical centre of the network. Provided that the network spreads out radially from the city centre, the stations with highest closeness centrality are assumed to be located within the traditional city centre of the city.</p>
+</section>
+</section>
+<section id="flows-weighted-network" class="level3">
+<h3 class="anchored" data-anchor-id="flows-weighted-network">Flows: Weighted Network</h3>
+</section>
+</section>
+<section id="part-2-spatial-interaction-models" class="level2">
+<h2 class="anchored" data-anchor-id="part-2-spatial-interaction-models">Part 2: Spatial Interaction Models</h2>
+<p>In the second part, we will analyse the OD matrix of the London Underground.</p>
+<section id="models-and-calibration" class="level3">
+<h3 class="anchored" data-anchor-id="models-and-calibration">Models and Calibration</h3>
+<section id="family-of-spatial-interaction-models" class="level4">
+<h4 class="anchored" data-anchor-id="family-of-spatial-interaction-models">Family of Spatial Interaction Models</h4>
+<p>The family of spatial interaction models are as follows:</p>
+<p>The <strong>unconstrained model</strong> only constrains the model with matching the total flows with the observed value, written as</p>
+<p><span class="math display">\[
+T_{ij} = K O^{\alpha}_i D^{\gamma}_j f(c_{ij})
+\]</span></p>
+<p>where <span class="math inline">\(K\)</span> is the constant</p>
+<p><span class="math display">\[
+K = \frac{T}{\sum_i \sum_j O^{\alpha}_i D^{\gamma}_j f(c_{ij})}
+\]</span></p>
+<p>so that the total number of journeys are constrained.</p>
+<p>The <strong>singly constrained model</strong> constrains the total number of observations for each component at the origin or the destination. The origin constrained model fixes the total number of journeys at the origin, as:</p>
+<p><span class="math display">\[
+T_{ij} = A_i O^{\alpha}_i D^{\gamma}_j f(c_{ij})
+\]</span></p>
+<p>The destination constrained model fixes the total number at the destination. The parameter <span class="math inline">\(A_i\)</span> is determined so that the total at the origin is constrained, that is:</p>
+<p><span class="math display">\[
+\sum_j T_{ij} = O_i \therefore A_i = \frac{1}{\sum_j D_j f(c_{ij})}
+\]</span></p>
+<p>Similarly, the <strong>destination constrained model</strong> constrains the total at the destination.</p>
+<p><span class="math display">\[
+T_{ij} = O^{\alpha}_i B_j D^{\gamma}_j f(c_{ij}) \quad
+\text{where } \left (B_j = \frac{1}{\sum_i O_i f(c_{ij})} \right)
+\]</span></p>
+<p>The <strong>doubly constrained model</strong> constrains both the total at the origin and destination.</p>
+<p><span class="math display">\[
+T_{ij} = A_i O^{\alpha}_i B_j D^{\gamma}_j \exp(-\beta c_{ij})
+\]</span></p>
+</section>
+<section id="calibration" class="level4">
+<h4 class="anchored" data-anchor-id="calibration">Calibration</h4>
+<p>The dataset used for analysis have the following data for every origin-destination pair for the London Underground Stations.</p>
+<ul>
+<li>population of origin</li>
+<li>jobs at the destination</li>
+<li>distance between origin and destination</li>
+<li>flow from the origin to the destination</li>
+</ul>
+<p>Using this dataset, we will use the doubly constrained model to estimate the best cost function and parameters by comparing with the observed flow. Constraining both the total journeys for both the origin and destination will enable the full utilisation of observed data, enabling a most accurate calibration of the cost function.</p>
+<p>The doubly constrained model after a logarithm transformation into a Poisson expression can be written as:</p>
+<p><span class="math display">\[
+\ln(T_{ij}) = \ln A_i + \ln O^{\alpha}_i + \ln B_j + \ln D^{\gamma}_j + \ln f(c_{ij}) \\
+\]</span></p>
+<p>We will compare the negative exponential and inverse power relationships as the cost function <span class="math inline">\(f(c_{ij})\)</span> as follows:</p>
+<p><span class="math display">\[
+f(d_{ij}) =
+\begin{cases}
+\exp(-\beta c_{ij}) \text{ (Negative Exponential)} \\
+c^{-\beta}_{ij}  \text{ (Inverse Power)}
+\end{cases}
+\]</span></p>
+<p>For each cost function, we have run the Poisson Regression to calculate the optimal parameter <span class="math inline">\(\beta\)</span>.</p>
+<table class="table">
+<caption>Comparison of results for the doubly constrained model using inverse power and negative exponential cost functions.</caption>
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Cost Function</th>
+<th>Parameter <span class="math inline">\(\beta\)</span></th>
+<th><span class="math inline">\(R^2\)</span> value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Negative exponential <span class="math inline">\(f(c_{ij}) = \exp(-\beta c_{ij})\)</span></td>
+<td><span class="math inline">\(\beta = 1.543 \times 10^{-4}\)</span></td>
+<td><span class="math inline">\(R^2 = 0.4979\)</span></td>
+</tr>
+<tr class="even">
+<td>Inverse Power <span class="math inline">\(f(c_{ij}) = c^{-\beta}_{ij}\)</span></td>
+<td><span class="math inline">\(\beta = 9.096 \times 10^{-1}\)</span></td>
+<td><span class="math inline">\(R^2 = 0.4077\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>From these results, the negative exponential model for the cost function has a better fit to the observed flows. When considering the scenarios, the cost function <span class="math display">\[
+f(c_{ij}) = \exp(-\beta c_{ij}) \quad (\beta = -1.543 \times 10^{-4})
+\]</span></p>
+<p>will be used.</p>
+</section>
+</section>
+<section id="scenarios" class="level3">
+<h3 class="anchored" data-anchor-id="scenarios">Scenarios</h3>
+<p>The scenarios we will observe in this report are as follows:</p>
+<div id="tbl-scenarios" class="anchored">
+<table class="table">
+<caption>Table&nbsp;1: The scenarios explored in this report</caption>
+<colgroup>
+<col style="width: 20%">
+<col style="width: 80%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Scenario</th>
+<th style="text-align: left;">Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Scenario A</td>
+<td style="text-align: left;">Jobs at Canary Wharf decrease by 50 %</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Scenario B</td>
+<td style="text-align: left;">Increase in cost of transport - considering 2 parameters</td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="scenario-a" class="level4">
+<h4 class="anchored" data-anchor-id="scenario-a">Scenario A</h4>
+<p>We will first decrease the number of jobs at Canary Wharf by 50%, from the original 58,772 to 29,386. We will use the origin-constrained model to simulate this behaviour. The procedure is as follows:</p>
+<ol type="1">
+<li>Calculate the flow based on the origin-constrained model <span class="math inline">\(T_{ij} = A_i O_i D^{\gamma}_j \exp(-\beta c_{ij})\)</span> to retrieve the optimal <span class="math inline">\(\gamma\)</span> value for this dataset. Values for parameter <span class="math inline">\(\beta\)</span> is determined upon calibration.</li>
+<li>Reduce the number of jobs at Canary Wharf (transform <span class="math inline">\(D_j\)</span> into <span class="math inline">\(D'_j\)</span>)</li>
+<li>Recalibrate the adjusted <span class="math inline">\(A'_i\)</span> parameter with the new distribution of using the relationship <span class="math inline">\(A'_i = \frac{1}{\sum_j D'^{\gamma}_j f(c_{ij})}\)</span></li>
+<li>Calculate the new flows using the relationship <span class="math inline">\(T'_{ij} = A'_i O_i D'^{\gamma}_j \exp(-\beta c_{ij})\)</span></li>
+</ol>
+<p>The origin constrained model is used for the analysis to preserve the number of commuters starting their journeys in each area. We will observe how the destination of commuters changed in reaction to the decrease in jobs in Canary Wharf.</p>
+<p>We have observed a significant drop in the number of</p>
+</section>
+<section id="scenario-b" class="level4">
+<h4 class="anchored" data-anchor-id="scenario-b">Scenario B</h4>
+<p>We will consider 2 scenarios for the change in the cost of transport. Given the original parameter as <span class="math inline">\(\beta\)</span>, the parameters <span class="math inline">\(\beta_1, \beta_2\)</span> for the two scenarios B1 and B2 will be modified as follows.</p>
+<p><span class="math display">\[
+\begin{cases}
+\beta_1 = 2 \beta \\
+\beta_2 = 10 \beta
+\end{cases}
+\quad (\beta = -1.543 \times 10^{-4})
+\]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/dist_decay.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Distance decay function for the original scenario and the two modified scenarios.</figcaption>
+</figure>
+</div>
+</section>
+<section id="discussion" class="level4">
+<h4 class="anchored" data-anchor-id="discussion">Discussion</h4>
+<p>In scenario A, we have observed a significant drop in the number of journeys terminating at Canary Wharf.</p>
+<p>On the other hand, scenario B</p>
+<hr>
+<p>Word count: x words</p>
+<p>GitHub repository (as hyperlink): <a href="https://github.com/sokimura39/Urban_Simulation_Report">Urban_Simulation_Report</a></p>
+<div style="page-break-after: always;"></div>
+</section>
+</section>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

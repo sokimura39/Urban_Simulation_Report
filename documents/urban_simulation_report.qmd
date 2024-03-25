@@ -6,13 +6,18 @@ csl: harvard-cite-them-right.csl
 execute:
   echo: false
 format:
+  html:
+    theme: simplex
   pdf:
     include-in-header:
       text: |
         \addtokomafont{disposition}{\rmfamily}
-    mainfont: Spectral
-    sansfont: Roboto
-    fontsize: 12pt
+    mainfont: Segoe UI
+    sansfont: Segoe UI
+    monofont: CascadiaCode.ttf
+    fontsize: 11pt
+    linestretch: 1.1
+    whitespace: small
     papersize: a4
     geometry:
       - top=25mm
@@ -45,10 +50,41 @@ The first part of this report aims to address the resilience of the London Under
 
 #### Centrality Measures
 
-Centrality measures are characteristics of nodes showing their *importance* in various aspects. In this section, we will identify nodes on the network with the highest centrality in the following measurements: degree centrality, closeness centrality, and betweenness centrality.
+Centrality measures are characteristics of nodes showing their *importance* in various aspects. In this section, we will identify nodes on the network with the highest centrality in the following measurements: degree centrality, closeness centrality, and betweenness centrality. The 3 central measures that I will cover in this report are: degree centrality, betweenness centrality, and closeness centrality. We will consider a network of $n$ nodes, and the number of links between nodes $i$ and $j$ will be denoted as $A_{ij}$.
 
+**Degree centrality** is the number of links that are connected to each node. Considering the underground as an undirected graph, the degree centrality $k_i$ for node $i$ is calculated as
 
+$$
+k_i = \sum_{j} A_{ij}
+$$
 
+In the context of the underground network, the degree corresponds to the number of lines that serve each station counting 1 for each direction. A high degree centrality indicates there are many lines that serve the station, thus identifies importance of the station as a transit hub that allows for transfer between multiple lines.
+
+**Betweenness centrality** is defined by the number of shortest paths that run through the node (or link). The betweenness centrality $x_i$ can be calculated as 
+
+$$
+x_i = \frac{1}{n^2} \sum_{st} \frac{n^i_{st}}{g_{st}}
+$$
+
+where
+
+$$
+n^i_{st} = 
+\begin{cases}
+1 \quad (\text{if node } i \text{ is on geodesic from } s \text{ to }t)\\
+0 \quad (\text{otherwise})
+\end{cases}
+$$
+
+and $g_{st}$ is the total number of geodesic paths from $s$ to $t$. High betweenness centrality on the underground shows there are many passengers travelling through the station during their journeys. When this station becomes inaccessible, a large amount of people will be affected.
+
+**Closeness centrality** is the inverse of the main geodesic distance $l_i$ of one node to all the other nodes. Given the geodesic distance between nodes $i$ and $j$ as $d_{ij}$, the closeness centrality $C_i$ is calculated as 
+
+$$
+C_i = \frac{1}{l_i} = \frac{n}{\sum_j d_{ij}}
+$$
+
+A high closeness centrality in a rail network indicates the station is within a short distance from all the other stations, located at the physical centre of the network. Provided that the network spreads out radially from the city centre, the stations with highest closeness centrality are assumed to be located within the traditional city centre of the city.
 
 ### Flows: Weighted Network
 
@@ -92,10 +128,8 @@ $$
 Similarly, the **destination constrained model** constrains the total at the destination.
 
 $$
-\begin{gather}
-T_{ij} = O^{\alpha}_i B_j D^{\gamma}_j f(c_{ij}) \\
-\text{where} \left (B_j = \frac{1}{\sum_i O_i f(c_{ij})} \right)
-\end{gather}
+T_{ij} = O^{\alpha}_i B_j D^{\gamma}_j f(c_{ij}) \quad
+\text{where } \left (B_j = \frac{1}{\sum_i O_i f(c_{ij})} \right)
 $$
 
 The **doubly constrained model** constrains both the total at the origin and destination.
@@ -118,9 +152,7 @@ Using this dataset, we will use the doubly constrained model to estimate the bes
 The doubly constrained model after a logarithm transformation into a Poisson expression can be written as:
 
 $$
-\begin{gather}
 \ln(T_{ij}) = \ln A_i + \ln O^{\alpha}_i + \ln B_j + \ln D^{\gamma}_j + \ln f(c_{ij}) \\
-\end{gather}
 $$
 
 We will compare the negative exponential and inverse power relationships as the cost function $f(c_{ij})$ as follows:
@@ -144,10 +176,7 @@ For each cost function, we have run the Poisson Regression to calculate the opti
 
 From these results, the negative exponential model for the cost function has a better fit to the observed flows. When considering the scenarios, the cost function
 $$
-\begin{gather}
-f(c_{ij}) = \exp(-\beta c_{ij}) \\
-(\beta = -1.543 \times 10^{-4})
-\end{gather}
+f(c_{ij}) = \exp(-\beta c_{ij}) \quad (\beta = -1.543 \times 10^{-4})
 $$
 
 will be used.
@@ -161,7 +190,7 @@ The scenarios we will observe in this report are as follows:
 | Scenario A | Jobs at Canary Wharf decrease by 50 % |
 | Scenario B | Increase in cost of transport - considering 2 parameters |
 
-: The scenarios explored in this report.
+: The scenarios explored in this report {#tbl-scenarios tbl-colwidths="[20,80]"}
 
 #### Scenario A
 
@@ -179,7 +208,7 @@ We have observed a significant drop in the number of
 
 #### Scenario B
 
-We will consider 2 scenarios for the change in the cost of transport. The parameters $\beta_1, \beta_2$ for the two scenarios B1 and B2 will be modified as follows.
+We will consider 2 scenarios for the change in the cost of transport. Given the original parameter as $\beta$, the parameters $\beta_1, \beta_2$ for the two scenarios B1 and B2 will be modified as follows.
 
 $$
 \begin{cases}
@@ -191,18 +220,25 @@ $$
 
 ![Distance decay function for the original scenario and the two modified scenarios.](img/dist_decay.png)
 
+
+
 #### Discussion
 
+In scenario A, we have observed a significant drop in the number of journeys terminating at Canary Wharf.
 
+
+
+On the other hand, scenario B 
 
 
 ---
 
 Word count: x words
+
 GitHub repository (as hyperlink): [Urban_Simulation_Report](https://github.com/sokimura39/Urban_Simulation_Report)
 
 {{< pagebreak >}}
 
-## References
+## References {.unnumbered}
 
 
