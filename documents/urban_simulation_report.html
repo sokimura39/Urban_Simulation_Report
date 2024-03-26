@@ -95,7 +95,7 @@ n^i_{st} =
 0 \quad (\text{otherwise})
 \end{cases}
 \]</span></p>
-<p>and <span class="math inline">\(g_{st}\)</span> is the total number of geodesic paths from <span class="math inline">\(s\)</span> to <span class="math inline">\(t\)</span>.</p>
+<p>and <span class="math inline">\(g_{st}\)</span> is the total number of geodesic paths from <span class="math inline">\(s\)</span> to <span class="math inline">\(t\)</span>. High betweenness centrality on the underground shows there are many passengers travelling through the station during their journeys. When this station becomes inaccessible, a large amount of people will be affected.</p>
 <p><strong>Closeness centrality</strong> is the inverse of the main geodesic distance <span class="math inline">\(l_i\)</span> of one node to all the other nodes. Given the geodesic distance between nodes <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> as <span class="math inline">\(d_{ij}\)</span>, the closeness centrality <span class="math inline">\(C_i\)</span> is calculated as</p>
 <p><span class="math display">\[
 C_i = \frac{1}{l_i} = \frac{n}{\sum_j d_{ij}}
@@ -125,10 +125,10 @@ K = \frac{T}{\sum_i \sum_j O^{\alpha}_i D^{\gamma}_j f(c_{ij})}
 \]</span></p>
 <p>so that the total number of journeys are constrained.</p>
 <p>The <strong>singly constrained model</strong> constrains the total number of observations for each component at the origin or the destination. The origin constrained model fixes the total number of journeys at the origin, as:</p>
-<p><span class="math display">\[
+<p><span id="eq-orig"><span class="math display">\[
 T_{ij} = A_i O^{\alpha}_i D^{\gamma}_j f(c_{ij})
-\]</span></p>
-<p>The destination constrained model fixes the total number at the destination. The parameter <span class="math inline">\(A_i\)</span> is determined so that the total at the origin is constrained, that is:</p>
+\tag{1}\]</span></span></p>
+<p>The parameter <span class="math inline">\(A_i\)</span> is determined so that the total at the origin is constrained, that is:</p>
 <p><span class="math display">\[
 \sum_j T_{ij} = O_i \therefore A_i = \frac{1}{\sum_j D_j f(c_{ij})}
 \]</span></p>
@@ -138,12 +138,12 @@ T_{ij} = O^{\alpha}_i B_j D^{\gamma}_j f(c_{ij}) \quad
 \text{where } \left (B_j = \frac{1}{\sum_i O_i f(c_{ij})} \right)
 \]</span></p>
 <p>The <strong>doubly constrained model</strong> constrains both the total at the origin and destination.</p>
-<p><span class="math display">\[
+<p><span id="eq-dbl"><span class="math display">\[
 T_{ij} = A_i O^{\alpha}_i B_j D^{\gamma}_j \exp(-\beta c_{ij})
-\]</span></p>
+\tag{2}\]</span></span></p>
 </section>
-<section id="calibration" class="level4">
-<h4 class="anchored" data-anchor-id="calibration">Calibration</h4>
+<section id="calibration-of-cost-function" class="level4">
+<h4 class="anchored" data-anchor-id="calibration-of-cost-function">Calibration of Cost Function</h4>
 <p>The dataset used for analysis have the following data for every origin-destination pair for the London Underground Stations.</p>
 <ul>
 <li>population of origin</li>
@@ -152,7 +152,7 @@ T_{ij} = A_i O^{\alpha}_i B_j D^{\gamma}_j \exp(-\beta c_{ij})
 <li>flow from the origin to the destination</li>
 </ul>
 <p>Using this dataset, we will use the doubly constrained model to estimate the best cost function and parameters by comparing with the observed flow. Constraining both the total journeys for both the origin and destination will enable the full utilisation of observed data, enabling a most accurate calibration of the cost function.</p>
-<p>The doubly constrained model after a logarithm transformation into a Poisson expression can be written as:</p>
+<p>The doubly constrained model after a logarithm transformation of <a href="#eq-dbl">Equation&nbsp;2</a> into a Poisson expression can be written as:</p>
 <p><span class="math display">\[
 \ln(T_{ij}) = \ln A_i + \ln O^{\alpha}_i + \ln B_j + \ln D^{\gamma}_j + \ln f(c_{ij}) \\
 \]</span></p>
@@ -192,15 +192,16 @@ c^{-\beta}_{ij}  \text{ (Inverse Power)}
 </tr>
 </tbody>
 </table>
-<p>From these results, the negative exponential model for the cost function has a better fit to the observed flows. When considering the scenarios, the cost function <span class="math display">\[
+<p>From these results, the negative exponential model for the cost function has a better fit to the observed flows. When considering the scenarios, the cost function</p>
+<p><span id="eq-beta"><span class="math display">\[
 f(c_{ij}) = \exp(-\beta c_{ij}) \quad (\beta = -1.543 \times 10^{-4})
-\]</span></p>
+\tag{3}\]</span></span></p>
 <p>will be used.</p>
 </section>
 </section>
 <section id="scenarios" class="level3">
 <h3 class="anchored" data-anchor-id="scenarios">Scenarios</h3>
-<p>The scenarios we will observe in this report are as follows:</p>
+<p>The scenarios we will observe in this report are summarised in <a href="#tbl-scenarios">Table&nbsp;1</a>.</p>
 <div id="tbl-scenarios" class="anchored">
 <table class="table">
 <caption>Table&nbsp;1: The scenarios explored in this report</caption>
@@ -226,39 +227,85 @@ f(c_{ij}) = \exp(-\beta c_{ij}) \quad (\beta = -1.543 \times 10^{-4})
 </tbody>
 </table>
 </div>
+<p>Since scenario A involves the change in the characteristics of the destination, the origin constrained model is used for the analysis to preserve the number of commuters starting their journeys in each area.</p>
+<section id="calibration-of-gamma" class="level4">
+<h4 class="anchored" data-anchor-id="calibration-of-gamma">Calibration of <span class="math inline">\(\gamma\)</span></h4>
+<p>Since the origin-constrained model will be used for the analysis of the scenarios, the gamma variable introduced in <a href="#eq-orig">Equation&nbsp;1</a> must be calibrated before applying to the new scenarios. <span class="math inline">\(\gamma\)</span> with the highest R-squared value for estimating the original flow will be used, resulting as follows:</p>
+<p><span id="eq-gamma"><span class="math display">\[
+\gamma = 7.556 \times 10^{-1} \quad (R^2 = 0.4680)
+\tag{4}\]</span></span></p>
+</section>
 <section id="scenario-a" class="level4">
 <h4 class="anchored" data-anchor-id="scenario-a">Scenario A</h4>
-<p>We will first decrease the number of jobs at Canary Wharf by 50%, from the original 58,772 to 29,386. We will use the origin-constrained model to simulate this behaviour. The procedure is as follows:</p>
+<p>We will first decrease the number of jobs at Canary Wharf by 50%, from the original 58,772 to 29,386. Using the origin-constrained model, the procedure is as follows:</p>
 <ol type="1">
-<li>Calculate the flow based on the origin-constrained model <span class="math inline">\(T_{ij} = A_i O_i D^{\gamma}_j \exp(-\beta c_{ij})\)</span> to retrieve the optimal <span class="math inline">\(\gamma\)</span> value for this dataset. Values for parameter <span class="math inline">\(\beta\)</span> is determined upon calibration.</li>
+<li>Calculate the flow based on the origin-constrained model <span class="math inline">\(T_{ij} = A_i O_i D^{\gamma}_j \exp(-\beta c_{ij})\)</span> to retrieve the optimal <span class="math inline">\(\gamma\)</span> value for this dataset. The value for parameters <span class="math inline">\(\beta, \gamma\)</span> is derived from <a href="#eq-beta">Equation&nbsp;3</a> and <a href="#eq-gamma">Equation&nbsp;4</a>.</li>
 <li>Reduce the number of jobs at Canary Wharf (transform <span class="math inline">\(D_j\)</span> into <span class="math inline">\(D'_j\)</span>)</li>
 <li>Recalibrate the adjusted <span class="math inline">\(A'_i\)</span> parameter with the new distribution of using the relationship <span class="math inline">\(A'_i = \frac{1}{\sum_j D'^{\gamma}_j f(c_{ij})}\)</span></li>
 <li>Calculate the new flows using the relationship <span class="math inline">\(T'_{ij} = A'_i O_i D'^{\gamma}_j \exp(-\beta c_{ij})\)</span></li>
 </ol>
-<p>The origin constrained model is used for the analysis to preserve the number of commuters starting their journeys in each area. We will observe how the destination of commuters changed in reaction to the decrease in jobs in Canary Wharf.</p>
-<p>We have observed a significant drop in the number of</p>
+<p>Using the origin constrained model, we will observe how the destination of commuters changed in reaction to the decrease in jobs in Canary Wharf.</p>
+<p>We have observed a significant drop in the number of journeys terminating at Canary Wharf from 47,690 in the original simulation to 29,496 in scenario A, which is 61.9 % of the original amount. As observable from <a href="#fig-OD-scenarioA">Figure&nbsp;1</a>, the decrease in the flows to Canary Wharf occured evenly among all origins, and has been redistributed into other destinations.</p>
+<div id="fig-OD-scenarioA" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/OD_change_scenarioA.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: Comparison of the flows of OD pairs the original simulation and the flows under scenario A.</figcaption>
+</figure>
+</div>
 </section>
 <section id="scenario-b" class="level4">
 <h4 class="anchored" data-anchor-id="scenario-b">Scenario B</h4>
-<p>We will consider 2 scenarios for the change in the cost of transport. Given the original parameter as <span class="math inline">\(\beta\)</span>, the parameters <span class="math inline">\(\beta_1, \beta_2\)</span> for the two scenarios B1 and B2 will be modified as follows.</p>
-<p><span class="math display">\[
+<p>We will consider 2 scenarios for the change in the cost of transport. Given the original parameter as <span class="math inline">\(\beta\)</span>, the parameters <span class="math inline">\(\beta_1, \beta_2\)</span> for the two scenarios B1 and B2 will be modified as shown in <a href="#eq-paramsB">Equation&nbsp;5</a> and <a href="#fig-paramsB">Figure&nbsp;2</a>.</p>
+<p><span id="eq-paramsB"><span class="math display">\[
 \begin{cases}
 \beta_1 = 2 \beta \\
 \beta_2 = 10 \beta
 \end{cases}
 \quad (\beta = -1.543 \times 10^{-4})
-\]</span></p>
-<div class="quarto-figure quarto-figure-center">
+\tag{5}\]</span></span></p>
+<div id="fig-paramsB" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="img/dist_decay.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Distance decay function for the original scenario and the two modified scenarios.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;2: Distance decay function for the original scenario and the two modified scenarios.</figcaption>
+</figure>
+</div>
+<p>The flows between origin-destination pairs for each scenario, plotted by distance of journeys, are shown in <a href="#fig-OD-scenarioB">Figure&nbsp;3</a>. As the <span class="math inline">\(\beta\)</span> increases, the longer distance journeys are disencouraged, and the distribution of the distance of journeys become negatively skewed.</p>
+<div id="fig-OD-scenarioB" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/OD_change_scenarioB.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;3: Comparison of the distance of flows for scenario B and the original prediction.</figcaption>
 </figure>
 </div>
 </section>
 <section id="discussion" class="level4">
 <h4 class="anchored" data-anchor-id="discussion">Discussion</h4>
-<p>In scenario A, we have observed a significant drop in the number of journeys terminating at Canary Wharf.</p>
-<p>On the other hand, scenario B</p>
+<p>In this section, we will discuss the impact of each scenario on the distribution of flows in the underground network. The measurements summarised in <a href="#tbl-measurements">Table&nbsp;2</a> are considered to examine the changes that occured as a result of each scenario.</p>
+<div id="tbl-measurements" class="anchored">
+<table class="table">
+<caption>Table&nbsp;2: Measurements consider to quantify the change in flows for each scenario</caption>
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Measurement</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Quantity of change in destination</td>
+<td>The number of flows that have different destination compared to the original scenario. A larger number of change in destination indicate larger impact.</td>
+</tr>
+<tr class="even">
+<td>Mean distance of journeys</td>
+<td>The mean distance of all journeys simulated in each scenario. A larger change in the distance compared to the original simulation indicate larger impact.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Both measurements indicate that scenario B2 had the largest impact on the number of flows, and scenario A being the least impactful.</p>
 <hr>
 <p>Word count: x words</p>
 <p>GitHub repository (as hyperlink): <a href="https://github.com/sokimura39/Urban_Simulation_Report">Urban_Simulation_Report</a></p>
