@@ -91,7 +91,12 @@ A high closeness centrality in a rail network indicates the station is within a 
 
 ## Part 2: Spatial Interaction Models
 
-In the second part, we will analyse the OD matrix of the London Underground.
+In the second part, we will analyse the OD matrix of the London Underground. The variables will be denoted as follows:
+
+- $T_{ij}$: estimated flow from station $i$ to $j$
+- $T$: total flow within a network, thus $T = \sum_{i,j} T_{ij}$
+- $d_{ij}$: distance between stations $i$ and $j$ - the cost function is a function of $d_{ij}$ hence denoted as $f(d_{ij})$
+- $O_i$, $D_j$: attractors (often population) at the origin and destination
 
 ### Models and Calibration
 
@@ -108,7 +113,7 @@ $$
 where $K$ is the constant
 
 $$
-K = \frac{T}{\sum_i \sum_j O^{\alpha}_i D^{\gamma}_j f(c_{ij})}
+K = \frac{T}{\sum_i \sum_j O^{\alpha}_i D^{\gamma}_j f(d_{ij})}
 $$
 
 so that the total number of journeys are constrained.
@@ -116,13 +121,13 @@ so that the total number of journeys are constrained.
 The **singly constrained model** constrains the total number of observations for each component at the origin or the destination. The origin constrained model fixes the total number of journeys at the origin, as:
 
 $$
-T_{ij} = A_i O^{\alpha}_i D^{\gamma}_j f(c_{ij})
+T_{ij} = A_i O^{\alpha}_i D^{\gamma}_j f(d_{ij})
 $$ {#eq-orig}
 
 The parameter $A_i$ is determined so that the total at the origin is constrained, that is:
 
 $$
-\sum_j T_{ij} = O_i \therefore A_i = \frac{1}{\sum_j D_j f(c_{ij})}
+\sum_j T_{ij} = O_i \therefore A_i = \frac{1}{\sum_j D_j f(d_{ij})}
 $$
 
 Similarly, the **destination constrained model** constrains the total at the destination.
@@ -135,7 +140,7 @@ $$
 The **doubly constrained model** constrains both the total at the origin and destination.
 
 $$
-T_{ij} = A_i O^{\alpha}_i B_j D^{\gamma}_j \exp(-\beta c_{ij})
+T_{ij} = A_i O^{\alpha}_i B_j D^{\gamma}_j \exp(-\beta d_{ij})
 $$ {#eq-dbl}
 
 #### Calibration of Cost Function
@@ -152,16 +157,16 @@ Using this dataset, we will use the doubly constrained model to estimate the bes
 The doubly constrained model after a logarithm transformation of @eq-dbl into a Poisson expression can be written as:
 
 $$
-\ln(T_{ij}) = \ln A_i + \ln O^{\alpha}_i + \ln B_j + \ln D^{\gamma}_j + \ln f(c_{ij}) \\
+\ln(T_{ij}) = \ln A_i + \ln O^{\alpha}_i + \ln B_j + \ln D^{\gamma}_j + \ln f(d_{ij}) \\
 $$
 
-We will compare the negative exponential and inverse power relationships as the cost function $f(c_{ij})$ as follows:
+We will compare the negative exponential and inverse power relationships as the cost function $f(d_{ij})$ as follows:
 
 $$
 f(d_{ij}) = 
 \begin{cases}
-\exp(-\beta c_{ij}) \text{ (Negative Exponential)} \\
-c^{-\beta}_{ij}  \text{ (Inverse Power)} 
+\exp(-\beta d_{ij}) \text{ (Negative Exponential)} \\
+d^{-\beta}_{ij}  \text{ (Inverse Power)} 
 \end{cases}
 $$
 
@@ -169,15 +174,15 @@ For each cost function, we have run the Poisson Regression to calculate the opti
 
 | Cost Function | Parameter $\beta$ | $R^2$ value |
 | --- | --- | --- |
-| Negative exponential $f(c_{ij}) = \exp(-\beta c_{ij})$ | $\beta = 1.543 \times 10^{-4}$ | $R^2 = 0.4979$ |
-| Inverse Power $f(c_{ij}) = c^{-\beta}_{ij}$ | $\beta = 9.096 \times 10^{-1}$ | $R^2 = 0.4077$ |
+| Negative exponential $f(d_{ij}) = \exp(-\beta d_{ij})$ | $\beta = 1.543 \times 10^{-4}$ | $R^2 = 0.4979$ |
+| Inverse Power $f(d_{ij}) = d^{-\beta}_{ij}$ | $\beta = 9.096 \times 10^{-1}$ | $R^2 = 0.4077$ |
 
 : Comparison of results for the doubly constrained model using inverse power and negative exponential cost functions.
 
 From these results, the negative exponential model for the cost function has a better fit to the observed flows. When considering the scenarios, the cost function
 
 $$
-f(c_{ij}) = \exp(-\beta c_{ij}) \quad (\beta = -1.543 \times 10^{-4})
+f(d_{ij}) = \exp(-\beta d_{ij}) \quad (\beta = -1.543 \times 10^{-4})
 $$ {#eq-beta}
 
 will be used.
@@ -208,10 +213,10 @@ $$ {#eq-gamma}
 
 We will first decrease the number of jobs at Canary Wharf by 50%, from the original 58,772 to 29,386. Using the origin-constrained model, the procedure is as follows:
 
-1. Calculate the flow based on the origin-constrained model $T_{ij} = A_i O_i D^{\gamma}_j \exp(-\beta c_{ij})$ to retrieve the optimal $\gamma$ value for this dataset. The value for parameters $\beta, \gamma$ is derived from @eq-beta and @eq-gamma.
+1. Calculate the flow based on the origin-constrained model $T_{ij} = A_i O_i D^{\gamma}_j \exp(-\beta d_{ij})$ to retrieve the optimal $\gamma$ value for this dataset. The value for parameters $\beta, \gamma$ is derived from @eq-beta and @eq-gamma.
 1. Reduce the number of jobs at Canary Wharf (transform $D_j$ into $D'_j$)
-2. Recalibrate the adjusted $A'_i$ parameter with the new distribution of using the relationship $A'_i = \frac{1}{\sum_j D'^{\gamma}_j f(c_{ij})}$
-3. Calculate the new flows using the relationship $T'_{ij} = A'_i O_i D'^{\gamma}_j \exp(-\beta c_{ij})$
+2. Recalibrate the adjusted $A'_i$ parameter with the new distribution of using the relationship $A'_i = \frac{1}{\sum_j D'^{\gamma}_j f(d_{ij})}$
+3. Calculate the new flows using the relationship $T'_{ij} = A'_i O_i D'^{\gamma}_j \exp(-\beta d_{ij})$
 
 Using the origin constrained model, we will observe how the destination of commuters changed in reaction to the decrease in jobs in Canary Wharf. 
 
@@ -221,7 +226,7 @@ We have observed a significant drop in the number of journeys terminating at Can
 
 #### Scenario B
 
-We will consider 2 scenarios for the change in the cost of transport. Given the original parameter as $\beta$, the parameters $\beta_1, \beta_2$ for the two scenarios B1 and B2 will be modified as shown in @eq-paramsB and @fig-paramsB.
+We will consider 2 scenarios for the change in the cost of transport. Given the original parameter as $\beta$, the parameters $\beta_1, \beta_2$ for the two scenarios B1 and B2 will be modified as shown in @eq-paramsB and @fig-paramsB. 
 
 $$
 \begin{cases}
@@ -231,7 +236,7 @@ $$
 \quad (\beta = -1.543 \times 10^{-4})
 $$ {#eq-paramsB}
 
-![Distance decay function for the original scenario and the two modified scenarios.](img/dist_decay.png){#fig-paramsB}
+![Distance decay function for the original scenario and the two modified scenarios. This indicates the cost for travelling a fixed distance will be equivalent to that of travelling twice (B1) or 10 times (B2) the distance in the original model.](img/dist_decay.png){#fig-paramsB}
 
 The flows between origin-destination pairs for each scenario, plotted by distance of journeys, are shown in @fig-OD-scenarioB. As the $\beta$ increases, the longer distance journeys are disencouraged, and the distribution of the distance of journeys become negatively skewed. 
 
@@ -241,17 +246,26 @@ The flows between origin-destination pairs for each scenario, plotted by distanc
 
 In this section, we will discuss the impact of each scenario on the distribution of flows in the underground network. The  measurements summarised in @tbl-measurements are considered to examine the changes that occured as a result of each scenario.
 
-| Measurement | Explanation |
+| Measurement | Explanation | Equation |
 | --- | --- |
-| Quantity of change in destination | The number of flows that have different destination compared to the original scenario. A larger number of change in destination indicate larger impact. |
-| Mean distance of journeys | The mean distance of all journeys simulated in each scenario. A larger change in the distance compared to the original simulation indicate larger impact. |
+| Quantity of change in destination $T_{\text{diff}}$ | The number of flows that have different destination compared to the original scenario. A larger number of change in destination indicate larger impact. | $T_{\text{diff}} = \frac{\sum_{i,j} |T'_{ij} - T_{ij}|}{2}$ |
+| Mean distance of journeys $\bar{\delta^X}$ | The mean distance of all journeys simulated in each scenario. A larger change in the distance compared to the original simulation indicate larger impact. | $\bar{\delta} = \frac{\sum_{i,j}\left(T_{ij}d_{ij}\right)}{T}$ |
 
-: Measurements consider to quantify the change in flows for each scenario {#tbl-measurements}
+: Measurements consider to quantify the change in flows for each scenario. $T'_{ij}$ is the number of journeys from station $i$ to $j$ under the scenario. {#tbl-measurements}
 
+For each scenario, the values for these measurements are calculated as shown in @tbl-measure-scenarios. The number of destinations changed and the change in the mean distance of journeys both indicate that scenario B2 had the largest impact on the number of flows, and scenario A being the least impactful. 
 
+| Scenario | $T_{\text{diff}}$ | $\bar{\delta}$ [m] |
+| --- | --- | --- |
+| Scenario A | 18,193 (1.2 % of total flows) | 8,579 |
+| Scenario B1 | 346,503 (22.47 %) | 6,030 |
+| Scenario B2 | 1,222,191 (79.25 %) | 1,613 |
+| Original Simulation | Total flows: 1,542,283 | 8,583 |
 
+: Value of measurements for each scenario. {#tbl-measure-scenarios}
 
-Both measurements indicate that scenario B2 had the largest impact on the number of flows, and scenario A being the least impactful. 
+The intervention to the travel cost (scenario B) directly impacts all OD pairs, while the reduction of jobs in one area (scenario A) only impacts journeys that end at the station affected. This different nature of the interventions dictate the magnitude of change it causes; thus scenario B has a larger impact on the flows on the network as a whole. Recalling the impact of scenario A on Canary Wharf was a 39 % decrease in the total inflows, this figure falls between scenarios B1 and B2 in terms of $T_{\text{diff}}$. Since $\bar{\delta}$ remains unchanged the impact on Canary Wharf is difficult to compare between scenarios A and B1, scenario B2 has the largest impact even if the focus is on Canary Wharf. 
+To conclude, a drastic impact on the cost function has more impact throughout the network compared to a large change in the demand in a particular area. Impact of the actual changes in the underground fares that occured should be investigated to compare with the results of our model.
 
 ---
 
