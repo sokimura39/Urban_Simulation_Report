@@ -60,10 +60,28 @@ $$
 
 In the context of the underground network, the degree corresponds to the number of lines that serve each station counting 1 for each direction. A high degree centrality indicates there are many lines that serve the station, thus identifies importance of the station as a transit hub that allows for transfer between multiple lines.
 
+The stations with the highest degree centrality are shown in @tbl-degree. These stations match the characteristics of being a large transfer station.
+
+| Rank | Station | Degree |
+| ---: | :--- | ---: |
+| 1 | Stratford | 9 |
+| 2 | Bank and Monument | 8 |
+| 3 | Baker Street | 7 |
+| 3 | King's Cross St. Pancras | 7 |
+| 5 | Oxford Circus | 6 |
+| 5 | Green Park | 6 |
+| 5 | Earl's Court | 6 |
+| 5 | Canning Town | 6 |
+| 5 | Waterloo | 6 |
+| 5 | Liverpool Street | 6 |
+| 5 | West Ham | 6 |
+
+: Stations with the highest degree centrality. All stations tied at a degree of 6 are listed. {#tbl-degree}
+
 **Betweenness centrality** is defined by the number of shortest paths that run through the node (or link). The betweenness centrality $x_i$ can be calculated as 
 
 $$
-x_i = \frac{1}{n^2} \sum_{st} \frac{n^i_{st}}{g_{st}}
+x_i = \sum_{st} \frac{n^i_{st}}{g_{st}}
 $$
 
 where
@@ -76,17 +94,127 @@ n^i_{st} =
 \end{cases}
 $$
 
-and $g_{st}$ is the total number of geodesic paths from $s$ to $t$. High betweenness centrality on the underground shows there are many passengers travelling through the station during their journeys. When this station becomes inaccessible, a large amount of people will be affected.
+and $g_{st}$ is the total number of geodesic paths from $s$ to $t$. To normalised, the raw value should be divided by all possible combinations of shortest paths between the other $n-1$ nodes: $\frac{(n-1)(n-2)}{2}$. High betweenness centrality on the underground shows there are many passengers travelling through the station during their journeys, which are stations en route of connecting the suburban areas with the city centre, or stations on short-distance routes. When this station becomes inaccessible, a large amount of people will be affected.
 
-**Closeness centrality** is the inverse of the main geodesic distance $l_i$ of one node to all the other nodes. Given the geodesic distance between nodes $i$ and $j$ as $d_{ij}$, the closeness centrality $C_i$ is calculated as 
+The stations with the highest betweenness centrality are shown in @tbl-betweenness.
+
+| Rank | Station | Betweenness Centrality |
+| ---: | :--- | ---: |
+| 1 | Bank and Monument | 17,681 |
+| 2 | King's Cross St. Pancras | 16,625 |
+| 3 | Stratford | 14,563 |
+| 4 | Oxford Circus | 13,548 |
+| 5 | Euston | 13,181 |
+| 6 | Baker Street | 12,130 |
+| 7 | Earl's Court | 11,474 |
+| 8 | Shadwell | 11,128 |
+| 9 | Waterloo | 10,428 |
+| 10 | South Kensington | 10,335 |
+
+: Stations with highest betweenness centrality. {#tbl-betweenness}
+
+**Closeness centrality** is the inverse of the main geodesic distance $l_i$ of one node to all the other $n-1$ nodes. Given the geodesic distance between nodes $i$ and $j$ as $d_{ij}$, the closeness centrality $C_i$ is calculated as 
 
 $$
-C_i = \frac{1}{l_i} = \frac{n}{\sum_j d_{ij}}
+C_i = \frac{1}{l_i} = \frac{n-1}{\sum_{j} d_{ij}}
 $$
 
-A high closeness centrality in a rail network indicates the station is within a short distance from all the other stations, located at the physical centre of the network. Provided that the network spreads out radially from the city centre, the stations with highest closeness centrality are assumed to be located within the traditional city centre of the city.
+A high closeness centrality in a rail network indicates the station is within a short distance from all the other stations, located at the physical centre of the network. Provided that the network spreads out radially from the city centre, the stations with highest closeness centrality are assumed to be located within the city centre, as illustrated by the high-ranked stations in London shown in @tbl-closeness. These stations are located at the West End area - which can be assumed as the central area of London.
+
+| Rank | Station | Closeness Centrality $(\times 10^{-5})$ |
+| ---: | :--- | ---: |
+| 1 | Holborn | 7.924 |
+| 2 | King's Cross St. Pancras | 7.896 |
+| 3 | Tottenham Court Road | 7.889 |
+| 4 | Oxford Circus | 7.873 |
+| 5 | Leicester Square | 7.835 |
+| 6 | Picadilly Circus | 7.831 |
+| 7 | Charing Cross | 7.830 |
+| 8 | Chancery Lane | 7.823 |
+| 9 | Covent Garden | 7.807 |
+| 10 | Embankment | 7.799 |
+
+: Stations with the highest closeness centrality. {#tbl-closeness}
+
+#### Impact Measures
+
+For impact measurement, we considered the delta centrality, a concept introduced by @latora2007 that compares the *performance* of the whole network when a node is removed from the network in question. For a performance measure $P$ of the network $G$, the delta centrality $C^{\Delta}_i$ of node $i$ is defined as
+
+$$
+C^{\Delta}_i = \frac{\Delta P}{P} = \frac{P(G) - P(G')}{P(G)}
+$$
+
+where $G'$ denotes the network where node $i$ is removed. This can be applied to any performance measure $P$ - we have considered the measures summarised in @tbl-delta-performance. 
+
+| Performance Measure $P$ | Explanation |
+| --- | --- |
+| Inverse of Average Shortest Path Length | The average length of the shortest path between all pairs of nodes indicates the efficiency of the network, the smaller being more efficient. An inverse of this value indicates a better network with higher values. |
+| Number of Cycles in Networks | Cycles in networks allow for supplementary routes in case of incidents [@katifori2010]. More cycles in the network indicate a more resilient network. |
+
+: Performance measures considered for delta centrality. The impact of node removal are measured through the change in these performance values. {#tbl-delta-performance}
+
+These measures can be applied to any transport network, especially the average shortest path length is directly addressing the puropose of transport systems of connecting different areas. The number of cycles also impact the resilience of transport networks, although may not be applicable for road networks that inherently have a large number of cycles. An applicable example of these measures outside the London underground is the destruction of the subway network in New York City after the September 11 attacks, which resulted in the closure of multiple stations and line segments [@wyatt2002; @paaswell2012].
+
+#### Node Removal
+
+The removal of nodes with high centrality and the impact on the performance of the network are considered. For each centrality measure, two strategies are used to remove 10 nodes from the network: a **non-sequential** strategy removes nodes in order that appears in the rank tables (@tbl-degree; @tbl-betweenness; @tbl-closeness), while a **sequential** strategy removes the node with the highest centrality when recalculated after the previous node removal step. The stations removed for each centrality measure are shown in @tbl-removed-stations.
+
+:::{#tbl-removed-stations layout-ncol="3"}
+| Non-sequential | Sequential |
+| --- | --- |
+| Stratford | Stratford |
+| Bank and Monument |  |
+| Baker Street |  |
+| King's Cross St. Pancras |  |
+| Oxford Circus |  |
+| Green Park |  |
+| Earl's Court |  |
+| Canning Town |  |
+| Waterloo |  |
+| Liverpool Street |  |
+
+: Degree Centrality
+
+| Non-sequential | Sequential |
+| --- | --- |
+| Bank and Monument | Bank and Monument |
+| King's Cross St. Pancras |  |
+| Stratford |  |
+| Oxford Circus |  |
+| Euston |  |
+| Baker Street |  |
+| Earl's Court |  |
+| Shadwell |  |
+| Waterloo |  |
+| South Kensington |  |
+
+: Betweenness Centrality
+
+| Non-sequential | Sequential |
+| --- | --- |
+| Holborn | Holborn |
+| King's Cross St. Pancras |  |
+| Tottenham Court Road |  |
+| Oxford Circus |  |
+| Leicester Square |  |
+| Picadilly Circus |  |
+| Charing Cross |  |
+| Chancery Lane |  |
+| Covent Garden |  |
+| Embankment |  |
+
+: Closeness Centrality
+
+Stations removed for impact assessment for each centrality measure and strategy. For each scenario, the stations were removed one at a time from the top of the table to the bottom.
+:::
 
 ### Flows: Weighted Network
+
+#### Centrality Measures
+
+#### Impact Measures
+
+#### Node Removal
 
 
 ## Part 2: Spatial Interaction Models

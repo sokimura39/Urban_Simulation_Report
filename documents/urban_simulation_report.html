@@ -21,7 +21,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="urban_simulation_report_files/libs/clipboard/clipboard.min.js"></script>
@@ -83,9 +102,74 @@ ul.task-list li input[type="checkbox"] {
 k_i = \sum_{j} A_{ij}
 \]</span></p>
 <p>In the context of the underground network, the degree corresponds to the number of lines that serve each station counting 1 for each direction. A high degree centrality indicates there are many lines that serve the station, thus identifies importance of the station as a transit hub that allows for transfer between multiple lines.</p>
+<p>The stations with the highest degree centrality are shown in <a href="#tbl-degree">Table&nbsp;1</a>. These stations match the characteristics of being a large transfer station.</p>
+<div id="tbl-degree" class="anchored">
+<table class="table">
+<caption>Table&nbsp;1: Stations with the highest degree centrality. All stations tied at a degree of 6 are listed.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Rank</th>
+<th style="text-align: left;">Station</th>
+<th style="text-align: right;">Degree</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">Stratford</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">Bank and Monument</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">Baker Street</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">King’s Cross St.&nbsp;Pancras</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Oxford Circus</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Earl’s Court</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Canning Town</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Waterloo</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Liverpool Street</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">West Ham</td>
+<td style="text-align: right;">6</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>Betweenness centrality</strong> is defined by the number of shortest paths that run through the node (or link). The betweenness centrality <span class="math inline">\(x_i\)</span> can be calculated as</p>
 <p><span class="math display">\[
-x_i = \frac{1}{n^2} \sum_{st} \frac{n^i_{st}}{g_{st}}
+x_i = \sum_{st} \frac{n^i_{st}}{g_{st}}
 \]</span></p>
 <p>where</p>
 <p><span class="math display">\[
@@ -95,21 +179,273 @@ n^i_{st} =
 0 \quad (\text{otherwise})
 \end{cases}
 \]</span></p>
-<p>and <span class="math inline">\(g_{st}\)</span> is the total number of geodesic paths from <span class="math inline">\(s\)</span> to <span class="math inline">\(t\)</span>. High betweenness centrality on the underground shows there are many passengers travelling through the station during their journeys. When this station becomes inaccessible, a large amount of people will be affected.</p>
-<p><strong>Closeness centrality</strong> is the inverse of the main geodesic distance <span class="math inline">\(l_i\)</span> of one node to all the other nodes. Given the geodesic distance between nodes <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> as <span class="math inline">\(d_{ij}\)</span>, the closeness centrality <span class="math inline">\(C_i\)</span> is calculated as</p>
+<p>and <span class="math inline">\(g_{st}\)</span> is the total number of geodesic paths from <span class="math inline">\(s\)</span> to <span class="math inline">\(t\)</span>. To normalised, the raw value should be divided by all possible combinations of shortest paths between the other <span class="math inline">\(n-1\)</span> nodes: <span class="math inline">\(\frac{(n-1)(n-2)}{2}\)</span>. High betweenness centrality on the underground shows there are many passengers travelling through the station during their journeys, which are stations en route of connecting the suburban areas with the city centre, or stations on short-distance routes. When this station becomes inaccessible, a large amount of people will be affected.</p>
+<p>The stations with the highest betweenness centrality are shown in <a href="#tbl-betweenness">Table&nbsp;2</a>.</p>
+<div id="tbl-betweenness" class="anchored">
+<table class="table">
+<caption>Table&nbsp;2: Stations with highest betweenness centrality.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Rank</th>
+<th style="text-align: left;">Station</th>
+<th style="text-align: right;">Betweenness Centrality</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">Bank and Monument</td>
+<td style="text-align: right;">17,681</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">King’s Cross St.&nbsp;Pancras</td>
+<td style="text-align: right;">16,625</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">Stratford</td>
+<td style="text-align: right;">14,563</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Oxford Circus</td>
+<td style="text-align: right;">13,548</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Euston</td>
+<td style="text-align: right;">13,181</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">Baker Street</td>
+<td style="text-align: right;">12,130</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: left;">Earl’s Court</td>
+<td style="text-align: right;">11,474</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: left;">Shadwell</td>
+<td style="text-align: right;">11,128</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: left;">Waterloo</td>
+<td style="text-align: right;">10,428</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: left;">South Kensington</td>
+<td style="text-align: right;">10,335</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Closeness centrality</strong> is the inverse of the main geodesic distance <span class="math inline">\(l_i\)</span> of one node to all the other <span class="math inline">\(n-1\)</span> nodes. Given the geodesic distance between nodes <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> as <span class="math inline">\(d_{ij}\)</span>, the closeness centrality <span class="math inline">\(C_i\)</span> is calculated as</p>
 <p><span class="math display">\[
-C_i = \frac{1}{l_i} = \frac{n}{\sum_j d_{ij}}
+C_i = \frac{1}{l_i} = \frac{n-1}{\sum_{j} d_{ij}}
 \]</span></p>
-<p>A high closeness centrality in a rail network indicates the station is within a short distance from all the other stations, located at the physical centre of the network. Provided that the network spreads out radially from the city centre, the stations with highest closeness centrality are assumed to be located within the traditional city centre of the city.</p>
+<p>A high closeness centrality in a rail network indicates the station is within a short distance from all the other stations, located at the physical centre of the network. Provided that the network spreads out radially from the city centre, the stations with highest closeness centrality are assumed to be located within the city centre, as illustrated by the high-ranked stations in London shown in <a href="#tbl-closeness">Table&nbsp;3</a>. These stations are located at the West End area - which can be assumed as the central area of London.</p>
+<div id="tbl-closeness" class="anchored">
+<table class="table">
+<caption>Table&nbsp;3: Stations with the highest closeness centrality.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Rank</th>
+<th style="text-align: left;">Station</th>
+<th style="text-align: right;">Closeness Centrality <span class="math inline">\((\times 10^{-5})\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">Holborn</td>
+<td style="text-align: right;">7.924</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">King’s Cross St.&nbsp;Pancras</td>
+<td style="text-align: right;">7.896</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">Tottenham Court Road</td>
+<td style="text-align: right;">7.889</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Oxford Circus</td>
+<td style="text-align: right;">7.873</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Leicester Square</td>
+<td style="text-align: right;">7.835</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">Picadilly Circus</td>
+<td style="text-align: right;">7.831</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: left;">Charing Cross</td>
+<td style="text-align: right;">7.830</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: left;">Chancery Lane</td>
+<td style="text-align: right;">7.823</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: left;">Covent Garden</td>
+<td style="text-align: right;">7.807</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: left;">Embankment</td>
+<td style="text-align: right;">7.799</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="impact-measures" class="level4">
+<h4 class="anchored" data-anchor-id="impact-measures">Impact Measures</h4>
+<p>For impact measurement, we considered the delta centrality, a concept introduced by <span class="citation" data-cites="latora2007">Latora and Marchiori (<a href="#ref-latora2007" role="doc-biblioref">2007</a>)</span> that compares the <em>performance</em> of the whole network when a node is removed from the network in question. For a performance measure <span class="math inline">\(P\)</span> of the network <span class="math inline">\(G\)</span>, the delta centrality <span class="math inline">\(C^{\Delta}_i\)</span> of node <span class="math inline">\(i\)</span> is defined as</p>
+<p><span class="math display">\[
+C^{\Delta}_i = \frac{\Delta P}{P} = \frac{P(G) - P(G')}{P(G)}
+\]</span></p>
+<p>where <span class="math inline">\(G'\)</span> denotes the network where node <span class="math inline">\(i\)</span> is removed. This can be applied to any performance measure <span class="math inline">\(P\)</span> - we have considered the measures summarised in <a href="#tbl-delta-performance">Table&nbsp;4</a>.</p>
+<div id="tbl-delta-performance" class="anchored">
+<table class="table">
+<caption>Table&nbsp;4: Performance measures considered for delta centrality. The impact of node removal are measured through the change in these performance values.</caption>
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Performance Measure <span class="math inline">\(P\)</span></th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Inverse of Average Shortest Path Length</td>
+<td>The average length of the shortest path between all pairs of nodes indicates the efficiency of the network, the smaller being more efficient. An inverse of this value indicates a better network with higher values.</td>
+</tr>
+<tr class="even">
+<td>Number of Cycles in Networks</td>
+<td>Cycles in networks allow for supplementary routes in case of incidents <span class="citation" data-cites="katifori2010">(<a href="#ref-katifori2010" role="doc-biblioref">Katifori, Szöllősi and Magnasco, 2010</a>)</span>. More cycles in the network indicate a more resilient network.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>These measures can be applied to any transport network, especially the average shortest path length is directly addressing the puropose of transport systems of connecting different areas. The number of cycles also impact the resilience of transport networks, although may not be applicable for road networks that inherently have a large number of cycles. An applicable example of these measures outside the London underground is the destruction of the subway network in New York City after the September 11 attacks, which resulted in the closure of multiple stations and line segments <span class="citation" data-cites="wyatt2002 paaswell2012">(<a href="#ref-wyatt2002" role="doc-biblioref">Wyatt, 2002</a>; <a href="#ref-paaswell2012" role="doc-biblioref">Paaswell, 2012</a>)</span>.</p>
+</section>
+<section id="node-removal" class="level4">
+<h4 class="anchored" data-anchor-id="node-removal">Node Removal</h4>
+<p>The removal of nodes with high centrality and the impact on the performance of the network are considered. For each centrality measure, two strategies are used to remove 10 nodes from the network: a <strong>non-sequential</strong> strategy removes nodes in order that appears in the rank tables (<a href="#tbl-degree">Table&nbsp;1</a>; <a href="#tbl-betweenness">Table&nbsp;2</a>; <a href="#tbl-closeness">Table&nbsp;3</a>), while a <strong>sequential</strong> strategy removes the node with the highest centrality when recalculated after the previous node removal step. The stations removed for each centrality measure are shown in <a href="#tbl-removed-stations">Table&nbsp;5</a>.</p>
+<div id="tbl-removed-stations" class="tbl-parent quarto-layout-panel anchored">
+<div class="panel-caption table-caption">
+<p>Table&nbsp;5: Stations removed for impact assessment for each centrality measure and strategy. For each scenario, the stations were removed one at a time from the top of the table to the bottom.</p>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="tbl-removed-stations-1" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-removed-stations" style="flex-basis: 33.3%;justify-content: center;">
+<table class="table">
+<caption>(a) Degree Centrality</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Non-sequential</th>
+<th style="text-align: left;">Sequential</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Stratford</td>
+<td style="text-align: left;">Stratford</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tbl-removed-stations-2" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-removed-stations" style="flex-basis: 33.3%;justify-content: center;">
+<table class="table">
+<caption>(b) Betweenness Centrality</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Non-sequential</th>
+<th style="text-align: left;">Sequential</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Bank and Monument</td>
+<td style="text-align: left;">Bank and Monument</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="tbl-removed-stations-3" class="quarto-layout-cell quarto-layout-cell-subref anchored" data-ref-parent="tbl-removed-stations" style="flex-basis: 33.3%;justify-content: center;">
+<table class="table">
+<caption>(c) Closeness Centrality</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Non-sequential</th>
+<th style="text-align: left;">Sequential</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Holborn</td>
+<td style="text-align: left;">Holborn</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </section>
 </section>
 <section id="flows-weighted-network" class="level3">
 <h3 class="anchored" data-anchor-id="flows-weighted-network">Flows: Weighted Network</h3>
+<section id="centrality-measures-1" class="level4">
+<h4 class="anchored" data-anchor-id="centrality-measures-1">Centrality Measures</h4>
+</section>
+<section id="impact-measures-1" class="level4">
+<h4 class="anchored" data-anchor-id="impact-measures-1">Impact Measures</h4>
+</section>
+<section id="node-removal-1" class="level4">
+<h4 class="anchored" data-anchor-id="node-removal-1">Node Removal</h4>
+</section>
 </section>
 </section>
 <section id="part-2-spatial-interaction-models" class="level2">
 <h2 class="anchored" data-anchor-id="part-2-spatial-interaction-models">Part 2: Spatial Interaction Models</h2>
-<p>In the second part, we will analyse the OD matrix of the London Underground.</p>
+<p>In the second part, we will analyse the OD matrix of the London Underground. The variables will be denoted as follows:</p>
+<ul>
+<li><span class="math inline">\(T_{ij}\)</span>: estimated flow from station <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span></li>
+<li><span class="math inline">\(T\)</span>: total flow within a network, thus <span class="math inline">\(T = \sum_{i,j} T_{ij}\)</span></li>
+<li><span class="math inline">\(d_{ij}\)</span>: distance between stations <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> - the cost function is a function of <span class="math inline">\(d_{ij}\)</span> hence denoted as <span class="math inline">\(f(d_{ij})\)</span></li>
+<li><span class="math inline">\(O_i\)</span>, <span class="math inline">\(D_j\)</span>: attractors (often population) at the origin and destination</li>
+</ul>
 <section id="models-and-calibration" class="level3">
 <h3 class="anchored" data-anchor-id="models-and-calibration">Models and Calibration</h3>
 <section id="family-of-spatial-interaction-models" class="level4">
@@ -121,16 +457,16 @@ T_{ij} = K O^{\alpha}_i D^{\gamma}_j f(c_{ij})
 \]</span></p>
 <p>where <span class="math inline">\(K\)</span> is the constant</p>
 <p><span class="math display">\[
-K = \frac{T}{\sum_i \sum_j O^{\alpha}_i D^{\gamma}_j f(c_{ij})}
+K = \frac{T}{\sum_i \sum_j O^{\alpha}_i D^{\gamma}_j f(d_{ij})}
 \]</span></p>
 <p>so that the total number of journeys are constrained.</p>
 <p>The <strong>singly constrained model</strong> constrains the total number of observations for each component at the origin or the destination. The origin constrained model fixes the total number of journeys at the origin, as:</p>
 <p><span id="eq-orig"><span class="math display">\[
-T_{ij} = A_i O^{\alpha}_i D^{\gamma}_j f(c_{ij})
+T_{ij} = A_i O^{\alpha}_i D^{\gamma}_j f(d_{ij})
 \tag{1}\]</span></span></p>
 <p>The parameter <span class="math inline">\(A_i\)</span> is determined so that the total at the origin is constrained, that is:</p>
 <p><span class="math display">\[
-\sum_j T_{ij} = O_i \therefore A_i = \frac{1}{\sum_j D_j f(c_{ij})}
+\sum_j T_{ij} = O_i \therefore A_i = \frac{1}{\sum_j D_j f(d_{ij})}
 \]</span></p>
 <p>Similarly, the <strong>destination constrained model</strong> constrains the total at the destination.</p>
 <p><span class="math display">\[
@@ -139,7 +475,7 @@ T_{ij} = O^{\alpha}_i B_j D^{\gamma}_j f(c_{ij}) \quad
 \]</span></p>
 <p>The <strong>doubly constrained model</strong> constrains both the total at the origin and destination.</p>
 <p><span id="eq-dbl"><span class="math display">\[
-T_{ij} = A_i O^{\alpha}_i B_j D^{\gamma}_j \exp(-\beta c_{ij})
+T_{ij} = A_i O^{\alpha}_i B_j D^{\gamma}_j \exp(-\beta d_{ij})
 \tag{2}\]</span></span></p>
 </section>
 <section id="calibration-of-cost-function" class="level4">
@@ -154,14 +490,14 @@ T_{ij} = A_i O^{\alpha}_i B_j D^{\gamma}_j \exp(-\beta c_{ij})
 <p>Using this dataset, we will use the doubly constrained model to estimate the best cost function and parameters by comparing with the observed flow. Constraining both the total journeys for both the origin and destination will enable the full utilisation of observed data, enabling a most accurate calibration of the cost function.</p>
 <p>The doubly constrained model after a logarithm transformation of <a href="#eq-dbl">Equation&nbsp;2</a> into a Poisson expression can be written as:</p>
 <p><span class="math display">\[
-\ln(T_{ij}) = \ln A_i + \ln O^{\alpha}_i + \ln B_j + \ln D^{\gamma}_j + \ln f(c_{ij}) \\
+\ln(T_{ij}) = \ln A_i + \ln O^{\alpha}_i + \ln B_j + \ln D^{\gamma}_j + \ln f(d_{ij}) \\
 \]</span></p>
-<p>We will compare the negative exponential and inverse power relationships as the cost function <span class="math inline">\(f(c_{ij})\)</span> as follows:</p>
+<p>We will compare the negative exponential and inverse power relationships as the cost function <span class="math inline">\(f(d_{ij})\)</span> as follows:</p>
 <p><span class="math display">\[
 f(d_{ij}) =
 \begin{cases}
-\exp(-\beta c_{ij}) \text{ (Negative Exponential)} \\
-c^{-\beta}_{ij}  \text{ (Inverse Power)}
+\exp(-\beta d_{ij}) \text{ (Negative Exponential)} \\
+d^{-\beta}_{ij}  \text{ (Inverse Power)}
 \end{cases}
 \]</span></p>
 <p>For each cost function, we have run the Poisson Regression to calculate the optimal parameter <span class="math inline">\(\beta\)</span>.</p>
@@ -181,12 +517,12 @@ c^{-\beta}_{ij}  \text{ (Inverse Power)}
 </thead>
 <tbody>
 <tr class="odd">
-<td>Negative exponential <span class="math inline">\(f(c_{ij}) = \exp(-\beta c_{ij})\)</span></td>
+<td>Negative exponential <span class="math inline">\(f(d_{ij}) = \exp(-\beta d_{ij})\)</span></td>
 <td><span class="math inline">\(\beta = 1.543 \times 10^{-4}\)</span></td>
 <td><span class="math inline">\(R^2 = 0.4979\)</span></td>
 </tr>
 <tr class="even">
-<td>Inverse Power <span class="math inline">\(f(c_{ij}) = c^{-\beta}_{ij}\)</span></td>
+<td>Inverse Power <span class="math inline">\(f(d_{ij}) = d^{-\beta}_{ij}\)</span></td>
 <td><span class="math inline">\(\beta = 9.096 \times 10^{-1}\)</span></td>
 <td><span class="math inline">\(R^2 = 0.4077\)</span></td>
 </tr>
@@ -194,17 +530,17 @@ c^{-\beta}_{ij}  \text{ (Inverse Power)}
 </table>
 <p>From these results, the negative exponential model for the cost function has a better fit to the observed flows. When considering the scenarios, the cost function</p>
 <p><span id="eq-beta"><span class="math display">\[
-f(c_{ij}) = \exp(-\beta c_{ij}) \quad (\beta = -1.543 \times 10^{-4})
+f(d_{ij}) = \exp(-\beta d_{ij}) \quad (\beta = -1.543 \times 10^{-4})
 \tag{3}\]</span></span></p>
 <p>will be used.</p>
 </section>
 </section>
 <section id="scenarios" class="level3">
 <h3 class="anchored" data-anchor-id="scenarios">Scenarios</h3>
-<p>The scenarios we will observe in this report are summarised in <a href="#tbl-scenarios">Table&nbsp;1</a>.</p>
+<p>The scenarios we will observe in this report are summarised in <a href="#tbl-scenarios">Table&nbsp;6</a>.</p>
 <div id="tbl-scenarios" class="anchored">
 <table class="table">
-<caption>Table&nbsp;1: The scenarios explored in this report</caption>
+<caption>Table&nbsp;6: The scenarios explored in this report</caption>
 <colgroup>
 <col style="width: 20%">
 <col style="width: 80%">
@@ -239,10 +575,10 @@ f(c_{ij}) = \exp(-\beta c_{ij}) \quad (\beta = -1.543 \times 10^{-4})
 <h4 class="anchored" data-anchor-id="scenario-a">Scenario A</h4>
 <p>We will first decrease the number of jobs at Canary Wharf by 50%, from the original 58,772 to 29,386. Using the origin-constrained model, the procedure is as follows:</p>
 <ol type="1">
-<li>Calculate the flow based on the origin-constrained model <span class="math inline">\(T_{ij} = A_i O_i D^{\gamma}_j \exp(-\beta c_{ij})\)</span> to retrieve the optimal <span class="math inline">\(\gamma\)</span> value for this dataset. The value for parameters <span class="math inline">\(\beta, \gamma\)</span> is derived from <a href="#eq-beta">Equation&nbsp;3</a> and <a href="#eq-gamma">Equation&nbsp;4</a>.</li>
+<li>Calculate the flow based on the origin-constrained model <span class="math inline">\(T_{ij} = A_i O_i D^{\gamma}_j \exp(-\beta d_{ij})\)</span> to retrieve the optimal <span class="math inline">\(\gamma\)</span> value for this dataset. The value for parameters <span class="math inline">\(\beta, \gamma\)</span> is derived from <a href="#eq-beta">Equation&nbsp;3</a> and <a href="#eq-gamma">Equation&nbsp;4</a>.</li>
 <li>Reduce the number of jobs at Canary Wharf (transform <span class="math inline">\(D_j\)</span> into <span class="math inline">\(D'_j\)</span>)</li>
-<li>Recalibrate the adjusted <span class="math inline">\(A'_i\)</span> parameter with the new distribution of using the relationship <span class="math inline">\(A'_i = \frac{1}{\sum_j D'^{\gamma}_j f(c_{ij})}\)</span></li>
-<li>Calculate the new flows using the relationship <span class="math inline">\(T'_{ij} = A'_i O_i D'^{\gamma}_j \exp(-\beta c_{ij})\)</span></li>
+<li>Recalibrate the adjusted <span class="math inline">\(A'_i\)</span> parameter with the new distribution of using the relationship <span class="math inline">\(A'_i = \frac{1}{\sum_j D'^{\gamma}_j f(d_{ij})}\)</span></li>
+<li>Calculate the new flows using the relationship <span class="math inline">\(T'_{ij} = A'_i O_i D'^{\gamma}_j \exp(-\beta d_{ij})\)</span></li>
 </ol>
 <p>Using the origin constrained model, we will observe how the destination of commuters changed in reaction to the decrease in jobs in Canary Wharf.</p>
 <p>We have observed a significant drop in the number of journeys terminating at Canary Wharf from 47,690 in the original simulation to 29,496 in scenario A, which is 61.9 % of the original amount. As observable from <a href="#fig-OD-scenarioA">Figure&nbsp;1</a>, the decrease in the flows to Canary Wharf occured evenly among all origins, and has been redistributed into other destinations.</p>
@@ -266,7 +602,7 @@ f(c_{ij}) = \exp(-\beta c_{ij}) \quad (\beta = -1.543 \times 10^{-4})
 <div id="fig-paramsB" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p><img src="img/dist_decay.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure&nbsp;2: Distance decay function for the original scenario and the two modified scenarios.</figcaption>
+<figcaption class="figure-caption">Figure&nbsp;2: Distance decay function for the original scenario and the two modified scenarios. This indicates the cost for travelling a fixed distance will be equivalent to that of travelling twice (B1) or 10 times (B2) the distance in the original model.</figcaption>
 </figure>
 </div>
 <p>The flows between origin-destination pairs for each scenario, plotted by distance of journeys, are shown in <a href="#fig-OD-scenarioB">Figure&nbsp;3</a>. As the <span class="math inline">\(\beta\)</span> increases, the longer distance journeys are disencouraged, and the distribution of the distance of journeys become negatively skewed.</p>
@@ -279,10 +615,10 @@ f(c_{ij}) = \exp(-\beta c_{ij}) \quad (\beta = -1.543 \times 10^{-4})
 </section>
 <section id="discussion" class="level4">
 <h4 class="anchored" data-anchor-id="discussion">Discussion</h4>
-<p>In this section, we will discuss the impact of each scenario on the distribution of flows in the underground network. The measurements summarised in <a href="#tbl-measurements">Table&nbsp;2</a> are considered to examine the changes that occured as a result of each scenario.</p>
+<p>In this section, we will discuss the impact of each scenario on the distribution of flows in the underground network. The measurements summarised in <a href="#tbl-measurements">Table&nbsp;7</a> are considered to examine the changes that occured as a result of each scenario.</p>
 <div id="tbl-measurements" class="anchored">
 <table class="table">
-<caption>Table&nbsp;2: Measurements consider to quantify the change in flows for each scenario</caption>
+<caption>Table&nbsp;7: Measurements consider to quantify the change in flows for each scenario. <span class="math inline">\(T'_{ij}\)</span> is the number of journeys from station <span class="math inline">\(i\)</span> to <span class="math inline">\(j\)</span> under the scenario.</caption>
 <colgroup>
 <col style="width: 50%">
 <col style="width: 50%">
@@ -295,17 +631,52 @@ f(c_{ij}) = \exp(-\beta c_{ij}) \quad (\beta = -1.543 \times 10^{-4})
 </thead>
 <tbody>
 <tr class="odd">
-<td>Quantity of change in destination</td>
+<td>Quantity of change in destination <span class="math inline">\(T_{\text{diff}}\)</span></td>
 <td>The number of flows that have different destination compared to the original scenario. A larger number of change in destination indicate larger impact.</td>
 </tr>
 <tr class="even">
-<td>Mean distance of journeys</td>
+<td>Mean distance of journeys <span class="math inline">\(\bar{\delta^X}\)</span></td>
 <td>The mean distance of all journeys simulated in each scenario. A larger change in the distance compared to the original simulation indicate larger impact.</td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>Both measurements indicate that scenario B2 had the largest impact on the number of flows, and scenario A being the least impactful.</p>
+<p>For each scenario, the values for these measurements are calculated as shown in <a href="#tbl-measure-scenarios">Table&nbsp;8</a>. The number of destinations changed and the change in the mean distance of journeys both indicate that scenario B2 had the largest impact on the number of flows, and scenario A being the least impactful.</p>
+<div id="tbl-measure-scenarios" class="anchored">
+<table class="table">
+<caption>Table&nbsp;8: Value of measurements for each scenario.</caption>
+<thead>
+<tr class="header">
+<th>Scenario</th>
+<th><span class="math inline">\(T_{\text{diff}}\)</span></th>
+<th><span class="math inline">\(\bar{\delta}\)</span> [m]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Scenario A</td>
+<td>18,193 (1.2 % of total flows)</td>
+<td>8,579</td>
+</tr>
+<tr class="even">
+<td>Scenario B1</td>
+<td>346,503 (22.47 %)</td>
+<td>6,030</td>
+</tr>
+<tr class="odd">
+<td>Scenario B2</td>
+<td>1,222,191 (79.25 %)</td>
+<td>1,613</td>
+</tr>
+<tr class="even">
+<td>Original Simulation</td>
+<td>Total flows: 1,542,283</td>
+<td>8,583</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The intervention to the travel cost (scenario B) directly impacts all OD pairs, while the reduction of jobs in one area (scenario A) only impacts journeys that end at the station affected. This different nature of the interventions dictate the magnitude of change it causes; thus scenario B has a larger impact on the flows on the network as a whole. Recalling the impact of scenario A on Canary Wharf was a 39 % decrease in the total inflows, this figure falls between scenarios B1 and B2 in terms of <span class="math inline">\(T_{\text{diff}}\)</span>. Since <span class="math inline">\(\bar{\delta}\)</span> remains unchanged the impact on Canary Wharf is difficult to compare between scenarios A and B1, scenario B2 has the largest impact even if the focus is on Canary Wharf. To conclude, a drastic impact on the cost function has more impact throughout the network compared to a large change in the demand in a particular area. Impact of the actual changes in the underground fares that occured should be investigated to compare with the results of our model.</p>
 <hr>
 <p>Word count: x words</p>
 <p>GitHub repository (as hyperlink): <a href="https://github.com/sokimura39/Urban_Simulation_Report">Urban_Simulation_Report</a></p>
@@ -314,10 +685,24 @@ f(c_{ij}) = \exp(-\beta c_{ij}) \quad (\beta = -1.543 \times 10^{-4})
 </section>
 </section>
 <section id="references" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+
+
 </section>
 
-</main>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body" role="list">
+<div id="ref-katifori2010" class="csl-entry" role="listitem">
+Katifori, E., Szöllősi, G. J. and Magnasco, M. O. (2010) <span>“Damage and <span>Fluctuations Induce Loops</span> in <span>Optimal Transport Networks</span>,”</span> <em>Physical Review Letters</em>, 104(4), p. 048704. doi: <a href="https://doi.org/10.1103/PhysRevLett.104.048704">10.1103/PhysRevLett.104.048704</a>.
+</div>
+<div id="ref-latora2007" class="csl-entry" role="listitem">
+Latora, V. and Marchiori, M. (2007) <span>“A measure of centrality based on network efficiency,”</span> <em>New Journal of Physics</em>, 9(6), p. 188. doi: <a href="https://doi.org/10.1088/1367-2630/9/6/188">10.1088/1367-2630/9/6/188</a>.
+</div>
+<div id="ref-paaswell2012" class="csl-entry" role="listitem">
+Paaswell, R. E. (2012) <span>“Approaches to <span>Infrastructure Redevelopment</span>, <span>WTC</span>, <span>Lower NYC</span> and the <span>Region</span>,”</span> pp. 215–226. doi: <a href="https://doi.org/10.1061/40717(148)18">10.1061/40717(148)18</a>.
+</div>
+<div id="ref-wyatt2002" class="csl-entry" role="listitem">
+Wyatt, E. (2002) <span>“Subway <span>Service</span> to <span>Resume On Routes Closed After</span> 9/11,”</span> <em>The New York Times</em>.
+</div>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
