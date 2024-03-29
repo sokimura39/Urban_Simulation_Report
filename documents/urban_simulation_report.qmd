@@ -146,10 +146,11 @@ $$
 
 where $G'$ denotes the network where node $i$ is removed. This can be applied to any performance measure $P$ - we have considered the measures summarised in @tbl-delta-performance. 
 
-| Performance Measure $P$ | Explanation |
+| Performance Measure $P$ | Explanation | Function |
 | --- | --- |
-| Inverse of Average Shortest Path Length | The average length of the shortest path between all pairs of nodes indicates the efficiency of the network, the smaller being more efficient. An inverse of this value indicates a better network with higher values. |
-| Number of Cycles in Networks | Cycles in networks allow for supplementary routes in case of incidents [@katifori2010]. More cycles in the network indicate a more resilient network. |
+| Number of Connected Components | The number of connected components is the number of connected components the tube network was split into, as a result of node removal. | `nx.number_connected_components(G)` |
+| Inverse of Average Shortest Path Length of the Largest Network | The average length of the shortest path between all pairs of nodes indicates the efficiency of the network, the smaller being more efficient. An inverse of this value indicates a better network with higher values. | `nx.naverage_shortest_path_length(G)` |
+| Number of Cycles in Networks | Cycles in networks allow for supplementary routes in case of incidents [@katifori2010]. More cycles in the network indicate a more resilient network; we have counted the number of cycle bases for each network. | `len(nx.cycle_basis(G))` |
 
 : Performance measures considered for delta centrality. The impact of node removal are measured through the change in these performance values. {#tbl-delta-performance}
 
@@ -159,7 +160,7 @@ These measures can be applied to any transport network, especially the average s
 
 The removal of nodes with high centrality and the impact on the performance of the network are considered. For each centrality measure, two strategies are used to remove 10 nodes from the network: a **non-sequential** strategy removes nodes in order that appears in the rank tables (@tbl-degree; @tbl-betweenness; @tbl-closeness), while a **sequential** strategy removes the node with the highest centrality when recalculated after the previous node removal step. The stations removed for each centrality measure are shown in @tbl-removed-stations.
 
-:::{#tbl-removed-stations layout-ncol="3"}
+:::{#tbl-removed-stations layout-nrow="3"}
 | Non-sequential | Sequential |
 | --- | --- |
 | Stratford | Stratford |
