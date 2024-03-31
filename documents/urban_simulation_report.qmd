@@ -56,7 +56,7 @@ Centrality measures are characteristics of nodes showing their *importance* in v
 
 $$
 k_i = \sum_{j} A_{ij}
-$$
+$$ {#eq-degree-centrality}
 
 In the context of the underground network, the degree corresponds to the number of lines that serve each station counting 1 for each direction. A high degree centrality indicates there are many lines that serve the station, thus identifies importance of the station as a transit hub that allows for transfer between multiple lines.
 
@@ -82,7 +82,7 @@ The stations with the highest degree centrality are shown in @tbl-degree. These 
 
 $$
 x_i = \sum_{st} \frac{n^i_{st}}{g_{st}}
-$$
+$$ {#eq-betweenness-centrality}
 
 where
 
@@ -117,7 +117,7 @@ The stations with the highest betweenness centrality are shown in @tbl-betweenne
 
 $$
 C_i = \frac{1}{l_i} = \frac{n-1}{\sum_{j} d_{ij}}
-$$
+$$ {#eq-closeness-centrality}
 
 A high closeness centrality in a rail network indicates the station is within a short distance from all the other stations, located at the physical centre of the network. Provided that the network spreads out radially from the city centre, the stations with highest closeness centrality are assumed to be located within the city centre, as illustrated by the high-ranked stations in London shown in @tbl-closeness. These stations are located at the West End area - which can be assumed as the central area of London.
 
@@ -226,13 +226,105 @@ For the comparison of the impact measure, the efficiency appears to be a better 
 
 ### Flows: Weighted Network
 
-In this section, a weighted network with the flows assigned to the links between stations will be considered.
-
-
+In this section, a weighted network with the flows assigned to the links between stations will be considered. Based on the Transport for London OD data [@transportforlondon2021], the morning peak flows have been assigned assuming that all flows use the shortest path, considering the length of each edge. Hereinafter, $w_{ij}$ is the flow on the link between adjacent stations $i$ and $j$ (sum of both directions). 
 
 #### Centrality Measures
 
+We will consider whether the 3 centrality measures we have identified in the previous section need adjustments to be applied in the context of the weighted network. 
+
+The **degree centrality** as the number of connected stations continues to be a valid figure. Theoretically, a flow-weighted version of degree centrality [@eq-degree-centrality] can be defined as 
+
+$$
+s_i = \sum_j A_{ij}w_{ij}
+$$ {#eq-deg-weighted}
+
+which is a measure defined as the strength $s_i$ [@lee2008]. This quantifies the amount of flow that passes through each node - which is highly related to the betweenness centrality in the weighted context. The stations with the higest weighted degree centrality is shown in @tbl-weighted-degree.
+
+| Rank | Station | Weighted Degree $(\times 10^5)$ |
+| ---: | :--- | ---: |
+| 1 | Bank and Monument | 5.188 |
+| 2 | Oxford Circus | 4.889 |
+| 3 | King's Cross St. Pancras | 4.671 |
+| 4 | Baker Street | 3.358 |
+| 5 | Waterloo | 3.344 |
+| 6 | Euston | 3.164 |
+| 7 | Green Park | 3.143 |
+| 8 | Victoria | 2.947 |
+| 9 | Liverpool Street | 2.770 |
+| 10 | Embankment | 2.539 |
+
+: Stations with the highest weighted degree centrality. {#tbl-weighted-degree}
+
+6 out of 10 stations in this table also appear in @tbl-degree, while the terminals of Euston, Victoria, and Liverpool Street only appear in @tbl-weighted-degree, which is a result of the high number of flows in these stations.
+
+The **betweenness centrality** considering flows, given $T_{ij}$ as the number of flows from node $i$ to $j$, can be proposed as follows:
+
+$$
+x'_i = \sum_{st} \frac{n^i_{st}}{g_{st}}T_{st}
+$$ {#eq-bet-weighted}
+
+Recalling the strength [@eq-deg-weighted] was the sum of all flows using the links that connect to the node, and @eq-bet-weighted only considers the flows that passes through (not beginning nor terminating), these two centrality measures fulfill the following relationship
+
+$$
+s_i = x'_i + (O_i + D_i - T_{ii})
+$$ {#eq-bet-weighted2}
+
+where $O_i, D_i$ is the number of flows originating and terminating at node $i$, respectively. By using @eq-bet-weighted2, the stations with the highest values are calculated as shown in @tbl-weighted-betweenness.
+
+| Rank | Station | Weighted Betweenness Centrality $(\times 10^5)$ |
+| ---: | :--- | ---: |
+| 1 | Oxford Circus | 4.415 |
+| 2 | Bank and Monument | 4.104 |
+| 3 | King's Cross St. Pancras | 4.052 |
+| 4 | Baker Street | 3.131 |
+| 5 | Green Park | 2.852 |
+| 6 | Euston | 2.816 |
+| 7 | Waterloo | 2.433 |
+| 8 | Embankment | 2.393 |
+| 9 | Charing Cross | 2.277 |
+| 10 | Victoria | 2.236 |
+
+: Stations with the highest weighted betweenness centrality. {#tbl-weighted-betweenness}
+
+6 out of 10 stations are in the ranking for the unweighted betweenness centrality [@tbl-betweenness], and 4 stations (Green Park, Embankment, Charing Cross, and Victoria) are only in this table. The topological betweenness centrality, despite its simplicity, is a good estimate for the actual flows that occur within the network.
+It is notable that because of the similarity between the weighted degree centrality, 9 out of 10 stations in @tbl-weighted-betweenness appear in @tbl-weighted-degree as well. 
+
+When considering the **closeness centrality** with regards to the number of flows, simply considering $T_{ij}$ in @eq-closeness-centrality as $C'_i = \frac{\sum_j T_{ij}}{\sum_j T_{ij}d_{ij}}$ will return the average distance travelled by the user of the station, which does not correspond to the principle of closeness centrality. (This figure may be larger in the city centre where people are willing to travel from far away, or at the periphery of the network where passengers need to travel long distances in general.) Instead, by defining the social distance of links as the inverse of the flows, and $u_{ij}$ as the shortest social distance between nodes $i$ and $j$, we will be able to calculate the closeness centrality considering the weights. Since $u_{ij}$ diverges to infinity when no flows between stations, we will use the harmonic closeness centrality, calculated as:
+
+$$
+C''_i = \frac{1}{n-1} \sum_j \frac{1}{u_{ij}}
+$$
+
+The 10 stations with the highest weighted closeness centrality is as shown in @tbl-weighted-closeness.
+
+| Rank | Station | Harmonic Weighted Closeness Centrality |
+| ---: | :--- | ---: |
+| 1 | Bank and Monument | 68.816 |
+| 2 | Liverpool Street | 66.250 |
+| 3 | Stratford | 65.282 |
+| 4 | Waterloo | 64.690 |
+| 5 | Green Park | 63.928 |
+| 6 | King's Cross St. Pancras | 63.876 |
+| 7 | Moorgate | 62.571 |
+| 8 | Oxford Circus | 61.793 |
+| 9 | Westminster | 61.636 |
+| 10 | Baker Street | 61.169 |
+
+: Stations with the highest weighted harmonic closeness centrality. {#tbl-weighted-closeness}
+
+Comparing this with @tbl-closeness, the weighted results are not geographically concentrated in the west end, but have more focus on terminal stations with high originating or terminating journeys, or stations connected by high-flowing edges. King's Cross St. Pancras and Oxford Circus are the only stations that appear in both @tbl-closeness and @tbl-weighted-closeness. 
+
 #### Impact Measures
+
+We will consider the need for adjusting the impact measures in @tbl-delta-performance when considering the passenger flows. 
+
+The size of the largest connected components is a valid measure in a weighted network, since it does not consider the flows between nodes. If the weight of the edges are to be incorporated to quantify the *connected-ness* of the nodes, a similar performance measure would be the maximum number of journeys that can be completed within a connected component.
+
+For the network efficiency, each of the distances should be weighted according to the number of passengers who travel between the two nodes. The efficiency should also account for the flows between points. The equation in @tbl-delta-performance should be adjusted using $T_{ij}$ as:
+
+$$
+E(G) = \frac{1}{n(n-1)} \sum_{i \ne j} \frac{T_{ij}}{d_{ij}}
+$$
 
 #### Node Removal
 
