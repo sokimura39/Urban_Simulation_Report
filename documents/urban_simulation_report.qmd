@@ -66,15 +66,15 @@ The stations with the highest degree centrality are shown in @tbl-degree. These 
 | ---: | :--- | ---: |
 | 1 | Stratford | 9 |
 | 2 | Bank and Monument | 8 |
-| 3 | Baker Street | 7 |
 | 3 | King's Cross St. Pancras | 7 |
-| 5 | Oxford Circus | 6 |
-| 5 | Green Park | 6 |
-| 5 | Earl's Court | 6 |
-| 5 | Canning Town | 6 |
+| 3 | Baker Street | 7 |
 | 5 | Waterloo | 6 |
-| 5 | Liverpool Street | 6 |
 | 5 | West Ham | 6 |
+| 5 | Canning Town | 6 |
+| 5 | Liverpool Street | 6 |
+| 5 | Earl's Court | 6 |
+| 5 | Green Park | 6 |
+| 5 | Oxford Circus | 6 |
 
 : Stations with the highest degree centrality. All stations tied at a degree of 6 are listed. {#tbl-degree}
 
@@ -100,16 +100,16 @@ The stations with the highest betweenness centrality are shown in @tbl-betweenne
 
 | Rank | Station | Betweenness Centrality |
 | ---: | :--- | ---: |
-| 1 | Bank and Monument | 17,681 |
-| 2 | King's Cross St. Pancras | 16,625 |
-| 3 | Stratford | 14,563 |
-| 4 | Oxford Circus | 13,548 |
-| 5 | Euston | 13,181 |
-| 6 | Baker Street | 12,130 |
-| 7 | Earl's Court | 11,474 |
-| 8 | Shadwell | 11,128 |
-| 9 | Waterloo | 10,428 |
-| 10 | South Kensington | 10,335 |
+| 1 | Bank and Monument | 17,602 |
+| 2 | King's Cross St. Pancras | 16,780 |
+| 3 | Stratford | 14,548 |
+| 4 | Baker Street | 13,200 |
+| 5 | Oxford Circus | 12,584 |
+| 6 | Euston | 12,401 |
+| 7 | Earl's Court | 11,454 |
+| 8 | Shadwell | 11,127 |
+| 9 | Waterloo | 10,407 |
+| 10 | South Kensington | 10,304 |
 
 : Stations with highest betweenness centrality. {#tbl-betweenness}
 
@@ -123,16 +123,16 @@ A high closeness centrality in a rail network indicates the station is within a 
 
 | Rank | Station | Closeness Centrality $(\times 10^{-5})$ |
 | ---: | :--- | ---: |
-| 1 | Holborn | 7.924 |
-| 2 | King's Cross St. Pancras | 7.896 |
-| 3 | Tottenham Court Road | 7.889 |
-| 4 | Oxford Circus | 7.873 |
-| 5 | Leicester Square | 7.835 |
-| 6 | Picadilly Circus | 7.831 |
-| 7 | Charing Cross | 7.830 |
-| 8 | Chancery Lane | 7.823 |
-| 9 | Covent Garden | 7.807 |
-| 10 | Embankment | 7.799 |
+| 1 | Holborn | 7.926 |
+| 2 | King's Cross St. Pancras | 7.914 |
+| 3 | Tottenham Court Road | 7.891 |
+| 4 | Oxford Circus | 7.883 |
+| 5 | Leicester Square | 7.837 |
+| 6 | Picadilly Circus | 7.834 |
+| 7 | Charing Cross | 7.833 |
+| 8 | Chancery Lane | 7.825 |
+| 9 | Covent Garden | 7.810 |
+| 10 | Embankment | 7.802 |
 
 : Stations with the highest closeness centrality. {#tbl-closeness}
 
@@ -146,11 +146,10 @@ $$
 
 where $G'$ denotes the network where node $i$ is removed. This can be applied to any performance measure $P$ - we have considered the measures summarised in @tbl-delta-performance. 
 
-| Performance Measure $P$ | Explanation | Function |
+| Performance Measure $P$ | Explanation |
 | --- | --- |
-| Number of Connected Components | The number of connected components is the number of connected components the tube network was split into, as a result of node removal. | `nx.number_connected_components(G)` |
-| Inverse of Average Shortest Path Length of the Largest Network | The average length of the shortest path between all pairs of nodes indicates the efficiency of the network, the smaller being more efficient. An inverse of this value indicates a better network with higher values. | `nx.naverage_shortest_path_length(G)` |
-| Number of Cycles in Networks | Cycles in networks allow for supplementary routes in case of incidents [@katifori2010]. More cycles in the network indicate a more resilient network; we have counted the number of cycle bases for each network. | `len(nx.cycle_basis(G))` |
+| Size of Largest Connected Component | The size of the largest connected component shows the connectivity of the network. A smaller number indicates stations are disattached from the main network, leading to less connectivity. |
+| Network Efficiency | Efficiency measure proposed by @latora2001, calculated as $E(G) = \frac{1}{n(n-1)}\sum_{i \ne j} \frac{1}{d_{ij}}$. A high value indicates a low average shortest path length between nodes, and a low value represents nodes are further apart or disconnected. Unlike the average shortest path length, this measure can be calculated for disconnected networks. Note the `nx.global_efficiency()` function cannot incorporate edge length, a custom function was defined to calculate this value. |
 
 : Performance measures considered for delta centrality. The impact of node removal are measured through the change in these performance values. {#tbl-delta-performance}
 
@@ -164,50 +163,58 @@ The removal of nodes with high centrality and the impact on the performance of t
 | Non-sequential | Sequential |
 | --- | --- |
 | Stratford | Stratford |
-| Bank and Monument |  |
-| Baker Street |  |
-| King's Cross St. Pancras |  |
-| Oxford Circus |  |
-| Green Park |  |
-| Earl's Court |  |
-| Canning Town |  |
-| Waterloo |  |
-| Liverpool Street |  |
+| Bank and Monument | Bank and Monument |
+| King's Cross St. Pancras  | Baker Street |
+| Baker Street | King's Cross St. Pancras |
+| Waterloo | Oxford Circus |
+| West Ham | Earl's Court |
+| Canning Town | Canning Town |
+| Liverpool Street | Waterloo |
+| Earl's Court | Turnham Green |
+| Green Park | Green Park |
 
 : Degree Centrality
 
 | Non-sequential | Sequential |
 | --- | --- |
 | Bank and Monument | Bank and Monument |
-| King's Cross St. Pancras |  |
-| Stratford |  |
-| Oxford Circus |  |
-| Euston |  |
-| Baker Street |  |
-| Earl's Court |  |
-| Shadwell |  |
-| Waterloo |  |
-| South Kensington |  |
+| King's Cross St. Pancras | King's Cross St. Pancras |
+| Stratford | Canada Water |
+| Baker Street | West Hampstead |
+| Oxford Circus | Earl's Court |
+| Euston | Oxford Circus |
+| Earl's Court | Shepherd's Bush |
+| Shadwell | Bakes Street |
+| Waterloo | Acton Town |
+| South Kensington | Stratford |
 
 : Betweenness Centrality
 
 | Non-sequential | Sequential |
 | --- | --- |
 | Holborn | Holborn |
-| King's Cross St. Pancras |  |
-| Tottenham Court Road |  |
-| Oxford Circus |  |
-| Leicester Square |  |
-| Picadilly Circus |  |
-| Charing Cross |  |
-| Chancery Lane |  |
-| Covent Garden |  |
-| Embankment |  |
+| King's Cross St. Pancras | King's Cross St. Pancras |
+| Tottenham Court Road | Embankment |
+| Oxford Circus | Waterloo |
+| Leicester Square | London Bridge |
+| Picadilly Circus | West Hampstead |
+| Charing Cross | Clapham Junction |
+| Chancery Lane | Mile End |
+| Covent Garden | Stratford |
+| Embankment | Notting Hill Gate |
 
 : Closeness Centrality
 
 Stations removed for impact assessment for each centrality measure and strategy. For each scenario, the stations were removed one at a time from the top of the table to the bottom.
 :::
+
+The change in performance measures caused by the node removal is as illustrated in @fig-node-removal-measures, and the final network is mapped in @fig-node-removal-network
+
+![The change in the performance measures as a result of node removal on the London Underground Network.](img/node_removal_measures.png){#fig-node-removal-measures}
+
+![The map of the London Underground Network after each node removal strategy.](img/node_removal_results.png){#fig-node-removal-network}
+
+
 
 ### Flows: Weighted Network
 
