@@ -214,9 +214,21 @@ The change in performance measures caused by the node removal is as illustrated 
 
 ![The map of the London Underground Network after each node removal strategy.](img/node_removal_results.png){#fig-node-removal-network}
 
+##### Discussions {.unnumbered}
 
+Based on the two performance measures, we can conclude that the strategy more effective to study resilience is the sequential removal. This strategy evaluates the network after the previous removal, thus able to identify the most important node at the point of removal. Since the characteristics of the network change after removing one node, the node with the next highest centrality measure may not be the most important node after removal of one node. One obvious example can be observed in the non-sequential removal based on highest closeness centrality measures, where the stations located in the centre of London are removed altogether; the impact to the network after the removal of the first few nodes have significantly lowered the importance to the network in this area. By assessing the importance of node at each step, the sequential removal is capable of identifying the hidden nodes that gain importance when the most obvious nodes have been removed, which may need improvements if we were to prepare for emergency situations.
+
+Comparing between the centrality measures, the betweenness centrality reflects the importance of stations the most. When removing multiple stations based on highest centrality measures, following the betweenness centrality lead to the largest decrease in both of the performance measures. Since a high betweenness centrality indicates high number of flows through the node, removing this node will force the flows to divert using different routes, requiring a higher cost to reach the destination. Given that connecting two points is the fundamental function of a transport network, the betweenness centrality directly addresses the importance regarding this aspect. 
+
+It is worth noting that the degree centrality has identified the first station to remove that impacts the performance the most, and has outperformed the closeness centrality until the 6th station. Further investigation is required to identify whether the stations at the centre of the network (high closeness centrality) or terminal stations with many lines operating (high degree centrality) is more critical to the performance of the whole network.
+
+For the comparison of the impact measure, the efficiency appears to be a better evaluation of the performance of the network. The size of the largest connected component does not take into account how well-connected the nodes are within the largest component, therefore unable to assess the impact of station removal unless the removal disconnects a portion of the network. In an underground network where multiple lines intersect at multiple points, removal of a few stations may not always disconnect stations from networks (especially in the central part of the network) but may impact the efficiency. On the other hand, efficiency measures the actual distance between origin and destination, thus the impact on the actual flow within the network is more accurately reported.
 
 ### Flows: Weighted Network
+
+In this section, a weighted network with the flows assigned to the links between stations will be considered.
+
+
 
 #### Centrality Measures
 
