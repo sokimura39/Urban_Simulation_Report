@@ -318,7 +318,17 @@ Comparing this with @tbl-closeness, the weighted results are not geographically 
 
 We will consider the need for adjusting the impact measures in @tbl-delta-performance when considering the passenger flows. 
 
-The size of the largest connected components is a valid measure in a weighted network, since it does not consider the flows between nodes. If the weight of the edges are to be incorporated to quantify the *connected-ness* of the nodes, a similar performance measure would be the maximum number of journeys that can be completed within a connected component.
+The size of the largest connected components is a valid measure in a weighted network, since it does not consider the flows between nodes. If the weight of the edges are to be incorporated to quantify the *connected-ness* of the nodes, a similar performance measure would be the ratio of journeys that can be completed within a connected component. Denoting this measure as $J(G)$, this could be calculated as:
+
+$$
+J(G) = \frac{\sum_{i \ne j} T_{ij} \delta_{ij}}{T} \quad
+\left( \delta_{ij} = 
+\begin{cases}
+1 \text{ if } i \text{ and } j \text{ are in same connected component} \\
+0 \text{ otherwise}
+\end{cases}
+\right)
+$$
 
 For the network efficiency, each of the distances should be weighted according to the number of passengers who travel between the two nodes. The efficiency should also account for the flows between points. The equation in @tbl-delta-performance should be adjusted using $T_{ij}$ as:
 
@@ -328,6 +338,21 @@ $$
 
 #### Node Removal
 
+Using $J(G)$ and $E(G)$ as performance measures, we will remove 3 nodes with the highest unweighted and weighted betweenness centrality as shown in @tbl-node-removal-betweenness.
+
+| Rank | Unweighted | Weighted |
+| ---: | :--- | :--- |
+| 1 | Bank and Monument | Oxford Circus |
+| 2 | King's Cross St. Pancras | Bank and Monument |
+| 3 | Stratford | King's Cross St. Pancras |
+
+: Stations removed using the highest unweighted and weighted betweenness centrality. Excerpt from @tbl-betweenness and @tbl-weighted-betweenness. {#tbl-node-removal-betweenness}
+
+The change in the performance measures $J(G), E(G)$ for each of the removal strategies are shown in @fig-weighted-performance. Comparing these results, removing stations based on the unweighted betweenness centrality measure has the most impact on the network. The weighted efficiency of the network has dropped significantly, indicating journeys are taking longer or impossible to complete with the nodes-removed network. Thus, the stations that have the most impact on the performance of the network are: Bank and Monument, King's Cross St. Pancras, and Stratford.
+
+![Change in the performance measures as a result of node removal according to the weighted and unweighted betweenness centrality.](img/weighted_node_removal_measures.png){#fig-weighted-performance}
+
+The weighted strategy takes into account the flows of passengers, but did not outperform the unweighted strategy. One possible explanation is that the first station removed by the weighted strategy, Oxford Circus, had alternatives that could operate without distorting the efficiency of the network, while Stratford, the third choice for the unweighted strategy immediately disconnects branches from the largest component.
 
 ## Part 2: Spatial Interaction Models
 
