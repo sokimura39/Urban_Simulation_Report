@@ -50,9 +50,11 @@ The first part of this report addresses the resilience of the London Underground
 
 ### Topological Network {#sec-topological}
 
+In this section, the topological network of the London Underground is analysed, without considering the passenger flows. The weight of each edge is the geographic distance of lines between station pairs.
+
 #### Centrality Measures
 
-Centrality measures are characteristics of nodes indicating their significance in various aspects. The measures used to identify significant stations in this report are: degree centrality, betweenness centrality, and closeness centrality. The number of nodes are denoted by $n$, and the number of links between nodes $i$ and $j$ as $A_{ij}$.
+Centrality measures are characteristics of nodes indicating their significance in various aspects. In this report, the measures used to identify significant stations are: degree centrality, betweenness centrality, and closeness centrality. The number of nodes within the network is denoted by $n$, and the number of links between nodes $i$ and $j$ as $A_{ij}$.
 
 **Degree centrality** is the number of links that are connected to each node. The degree centrality $k_i$ for node $i$ is calculated as
 
@@ -78,9 +80,9 @@ In the context of the underground network, the degree corresponds to the number 
 | 5 | Waterloo | 6 |
 | 5 | West Ham | 6 |
 
-: Stations with the highest degree centrality. All stations tied at a degree of 6 are listed. {#tbl-degree tbl-colwidths="[10,40,50]"}
+: Stations with the highest degree centrality. All stations tied at a degree of 6 are listed. {#tbl-degree}
 
-**Betweenness centrality** of a nodeis the number of shortest paths that run through. The betweenness centrality $x_i$ for node $i$ is calculated as 
+**Betweenness centrality** of a node is the number of shortest paths that run through the node. The betweenness centrality $x_i$ for node $i$ is calculated as 
 
 $$
 x_i = \sum_{s,t} \frac{n^i_{st}}{g_{st}}
@@ -96,7 +98,7 @@ n^i_{st} =
 \end{cases}
 $$
 
-and $g_{st}$ is the total number of geodesic paths from $s$ to $t$. When normalised by dividing by $(n-1)(n-2)/2$ (combinations between remaining nodes). High betweenness centrality on the underground shows it is on the shortest path between many pairs of stations, therefore many people are expected to pass it. The stations with the highest betweenness centrality are shown in @tbl-betweenness.
+and $g_{st}$ is the total number of geodesic paths from $s$ to $t$. This can be normalised by dividing by $(n-1)(n-2)/2$ (combinations between remaining nodes) to obtain a range between 0 and 1. A station with high betweenness centrality is on the shortest path between many origin-destination pairs of stations, therefore many people are expected to pass it, indicating its importance. The stations with the highest betweenness centrality are shown in @tbl-betweenness.
 
 | Rank | Station | Betweenness Centrality |
 | ---: | :--- | ---: |
@@ -111,17 +113,17 @@ and $g_{st}$ is the total number of geodesic paths from $s$ to $t$. When normali
 | 9 | Waterloo | 10,425 |
 | 10 | South Kensington | 10,302 |
 
-: Stations with the highest betweenness centrality. {#tbl-betweenness tbl-colwidths="[10,40,50]"}
+: Stations with the highest betweenness centrality. {#tbl-betweenness}
 
-**Closeness centrality** is the inverse of the mean geodesic distance from one node to other reachable $n_0$ nodes ($l_i$), scaled by the ratio of reachable nodes [@wasserman1994]. The closeness centrality $C_i$ is calculated as 
+**Closeness centrality** is the inverse of the mean geodesic distance from one node to other reachable $n_0$ nodes ($l_i$) in the same connected component. This value is scaled by the ratio of reachable nodes to account for connectedness, as proposed by @wasserman1994. The closeness centrality $C_i$ is calculated as 
 
 $$
-C_i = \frac{n_0-1}{n-1}\frac{1}{l_i} = \frac{n_0-1}{\sum_{j} d_{ij}}
+C_i = \frac{n_0-1}{n-1} \cdot \frac{1}{l_i} = \frac{(n_0-1)^2}{(n-1) \sum_{j} d_{ij}}
 $$ {#eq-closeness-centrality}
 
 where $d_{ij}$ is the geodesic distance between nodes $i$ and $j$.
 
-A high closeness centrality indicates the station is within a short distance from all the other stations. These stations are assumed to be located within the city centre, as the high-ranked stations clustered in central London shown in @tbl-closeness.
+A high closeness centrality indicates the station is within a short distance from all the other stations. These stations are located within the city centre, as the high-ranked stations clustered in central London shown in @tbl-closeness.
 
 | Rank | Station | Closeness Centrality [$\times 10^{-5}$] |
 | ---: | :--- | ---: |
@@ -136,11 +138,11 @@ A high closeness centrality indicates the station is within a short distance fro
 | 9 | Covent Garden | 7.806 |
 | 10 | Embankment | 7.799 |
 
-: Stations with the highest closeness centrality. Charing Cross is where the 'distance to London' is measured from [@leatherdale2016] - supporting that these stations are located in the city centre. {#tbl-closeness tbl-colwidths="[10,40,50]"}
+: Stations with the highest closeness centrality. Charing Cross is where the 'distance to London' is measured from [@leatherdale2016] - supporting that these stations are located in the city centre. {#tbl-closeness}
 
 #### Impact Measures
 
-The delta centrality quantifies the change in performance of the network when a node is removed [@latora2007]. For a performance measure $P$ of the network $G$, the delta centrality $C^{\Delta}_i$ of node $i$ is defined as
+For measuring the impact of node removal, we have used the delta centrality measure proposed by @latora2007. This quantifies the change in performance of the network when a node is removed. For a performance measure $P$ of the network $G$, the delta centrality $C^{\Delta}_i$ of node $i$ is defined as
 
 $$
 C^{\Delta}_i = \frac{\Delta P}{P} = \frac{P(G) - P(G')}{P(G)} \quad (G': G \text{ after removing node }i)
@@ -150,16 +152,16 @@ The performance measures considered are summarised in @tbl-delta-performance.
 
 | Performance Measure $P$ | Explanation |
 | --- | --- |
-| Size of Largest Connected Component (LCC) | The size of LCC shows the connectivity of the network. A smaller number indicates stations are disattached from the main network, leading to less connectivity. |
+| Size of Largest Connected Component (LCC) | The size of LCC shows the connectedness of the network. A smaller number indicates many stations are disconnected from the main network, resulting in less connectess. |
 | Network Efficiency $E(G) = \frac{1}{n(n-1)}\sum_{i \ne j} \frac{1}{d_{ij}}$ | Efficiency measure proposed by @latora2001. A high value indicates lower shortest path lengths between nodes. This measure is applicable for disconnected networks as well, unlike the average shortest path length. Since the `nx.global_efficiency()` function cannot incorporate edge length, a custom function was defined to calculate this value. |
 
 : Performance measures considered for delta centrality. {#tbl-delta-performance tbl-colwidths="[30,70]"}
 
-This can be applied to any transport network - closures of NYC subway stations after 9/11 [@wyatt2002; @paaswell2012] is one applicable example outside London. It is also applicable for other networks as well to assess the connectivity and the performance of the network.
+Applications can be found within and beyond transport networks - closures of NYC subway stations after 9/11 [@wyatt2002; @paaswell2012] is one example of analysing transport networks. In other contexts, @broder2000 analysed the early worldwide web from the size of (strongly) connected components, and @achard2007 is an example of applying the network efficiency measure to the human brain. These examples indicate the global applicability of impact measures.
 
 #### Node Removal
 
-The measures in @tbl-delta-performance is used to analyse the impact of node removal on the network. Two strategies are used to remove 10 nodes from the network, as summarised in @tbl-removal-strategies. The stations removed are shown in @tbl-removed-stations.
+The measures in @tbl-delta-performance is used to analyse the impact of node removal. Two strategies shown in @tbl-removal-strategies are used to remove 10 nodes from the network. The stations removed are shown in @tbl-removed-stations.
 
 | Strategy | Explanation |
 | :--- | :--- |
@@ -169,55 +171,55 @@ The measures in @tbl-delta-performance is used to analyse the impact of node rem
 : Strategies for removing nodes. {#tbl-removal-strategies tbl-colwidths="[30,70]"}
 
 :::{#tbl-removed-stations layout-nrow="3"}
-| Non-sequential | Sequential |
-| --- | --- |
-| Stratford | Stratford |
-| Bank and Monument | Bank and Monument |
-| Baker Street | King's Cross St. Pancras |
-| King's Cross St. Pancras | Baker Street |
-| Earl's Court | Green Park |
-| Canning Town | Earl's Court |
-| Liverpool Street | Canning Town |
-| Green Park | Oxford Circus |
-| Oxford Circus | Willesden Junction |
-| Waterloo | Waterloo |
+| Rank | Non-sequential | Sequential |
+| ---: | :--- | :--- |
+| 1 | Stratford | Stratford |
+| 2 | Bank and Monument | Bank and Monument |
+| 3 | Baker Street | King's Cross St. Pancras |
+| 4 | King's Cross St. Pancras | Baker Street |
+| 5 | Earl's Court | Green Park |
+| 6 | Canning Town | Earl's Court |
+| 7 | Liverpool Street | Canning Town |
+| 8 | Green Park | Oxford Circus |
+| 9 | Oxford Circus | Willesden Junction |
+| 10 | Waterloo | Waterloo |
 
 : Degree Centrality
 
-| Non-sequential | Sequential |
-| --- | --- |
-| Bank and Monument | Bank and Monument |
-| King's Cross St. Pancras | King's Cross St. Pancras |
-| Stratford | Canada Water |
-| Baker Street | West Hampstead |
-| Oxford Circus | Earl's Court |
-| Euston | Oxford Circus |
-| Earl's Court | Shepherd's Bush |
-| Shadwell | Bakes Street |
-| Waterloo | Acton Town |
-| South Kensington | Stratford |
+| Rank | Non-sequential | Sequential |
+| ---: | :--- | :--- |
+| 1 | Bank and Monument | Bank and Monument |
+| 2 | King's Cross St. Pancras | King's Cross St. Pancras |
+| 3 | Stratford | Canada Water |
+| 4 | Baker Street | West Hampstead |
+| 5 | Oxford Circus | Earl's Court |
+| 6 | Euston | Oxford Circus |
+| 7 | Earl's Court | Shepherd's Bush |
+| 8 | Shadwell | Bakes Street |
+| 9 | Waterloo | Acton Town |
+| 10 | South Kensington | Stratford |
 
 : Betweenness Centrality
 
-| Non-sequential | Sequential |
-| --- | --- |
-| Holborn | Holborn |
-| King's Cross St. Pancras | King's Cross St. Pancras |
-| Tottenham Court Road | Embankment |
-| Oxford Circus | Waterloo |
-| Leicester Square | London Bridge |
-| Picadilly Circus | West Hampstead |
-| Charing Cross | Clapham Junction |
-| Chancery Lane | Mile End |
-| Covent Garden | Stratford |
-| Embankment | Notting Hill Gate |
+| Rank | Non-sequential | Sequential |
+| ---: | :--- | :--- |
+| 1 | Holborn | Holborn |
+| 2 | King's Cross St. Pancras | King's Cross St. Pancras |
+| 3 | Tottenham Court Road | Embankment |
+| 4 | Oxford Circus | Waterloo |
+| 5 | Leicester Square | London Bridge |
+| 6 | Picadilly Circus | West Hampstead |
+| 7 | Charing Cross | Clapham Junction |
+| 8 | Chancery Lane | Mile End |
+| 9 | Covent Garden | Stratford |
+| 10 | Embankment | Notting Hill Gate |
 
 : Closeness Centrality
 
 Stations removed for each centrality measure and strategy. 
 :::
 
-The change in performance measures caused by the node removal is as illustrated in @fig-node-removal-measures, and the stations removed are mapped in @fig-node-removal-network.
+The change in performance measures caused by the node removal is illustrated in @fig-node-removal-measures, and the geographic locations of removed stations are mapped in @fig-node-removal-network.
 
 ![The change in the performance measures as a result of node removal on the London Underground Network.](img/node_removal_measures.png){#fig-node-removal-measures}
 
@@ -227,13 +229,13 @@ The change in performance measures caused by the node removal is as illustrated 
 
 The sequential removal is more effective to study resilience of the network compared to non-sequential removal. Since the characteristics of the network change upon node removal, the crucial node may also change when re-evaluating the remaining network. By assessing the importance of node at each step, the sequential removal is capable of identifying nodes that gain importance after the initial deformation.
 
-Node removal based on the betweenness centrality has the largest impact on performance. Since a high betweenness centrality indicates high flow through the node, removing this node will force a large number of flows to divert using different routes. Interestingly, the degree centrality has identified the first few stations with larger impact, and further investigation is required to identify whether this is a general trend or specific to the Underground network.
+Node removal based on the betweenness centrality has the largest impact on performance. Since a high betweenness centrality indicates many geodesics passing the node, removing this node will force many paths to divert to different routes. Interestingly, the degree centrality has identified the first few stations with larger impact. Further investigation is required to identify whether this is a general trend or specific to the Underground network.
 
 When comparing between impact measures, the efficiency is a better evaluation of the performance. The size of LCC is unable to assess the impact of station removal unless it disconnects nodes from the network, whereas the efficiency can assess the change within a connected network, thus the impact is more sensitively reported. Comparing the observations, the LCC shows little change except when removing hub stations that disconnect branches, where efficiency gives a continuous evaluation of performance.
 
 ### Flows: Weighted Network {#sec-weighted}
 
-In this section, a weighted network considering the passenger flows is analysed. Based on the morning peak origin-destination data from @transportforlondon2021, flows have been assigned to the shortest path between nodes considering the length of each edge. 
+In this section, a weighted network considering the passenger flows is analysed. Based on the morning peak origin-destination data from @transportforlondon2021, flows have been assigned to the shortest path between nodes considering the length of each edge. The flow is either used to weight origin-destination pairs or used directly as the weight of edges between stations.
 
 #### Centrality Measures
 
@@ -247,7 +249,7 @@ First, we have considered whether centrality measures in @sec-topological need a
 
 : Adjustments made for each centrality measure on the weighted network. {#tbl-weighted-centrality-measures tbl-colwidths="[20,25,55]"}
 
-Comparing the weighted degree and betweenness centralities in @tbl-weighted-centrality-measures, their difference lies in whether it accounts for journeys that originate or terminate at the node in question, and whether it double-counts flows that pass through the node. Thus, their relationship can be expressed as  
+Comparing the weighted degree and betweenness centralities in @tbl-weighted-centrality-measures, their difference lies in whether it counts journeys that originate or terminate at the node in question, and whether it double-counts flows that pass through the node. Thus, their relationship can be expressed as  
 
 $$
 s_i = 2x'_i + (O_i + D_i - T_{ii})
@@ -255,7 +257,7 @@ $$ {#eq-bet-weighted2}
 
 where $O_i, D_i$ is the number of flows originating and terminating at node $i$.
 
-Based on the above measures, we now examine the stations with high weighted centrality measures.
+Based on the above measures, we have examined the stations with high weighted centrality measures.
 
 The stations with the highest weighted degree centrality is shown in @tbl-weighted-degree.
 
@@ -274,7 +276,7 @@ The stations with the highest weighted degree centrality is shown in @tbl-weight
 
 : Stations with the highest weighted degree centrality. {#tbl-weighted-degree}
 
-6 out of 10 stations in this table also appear in @tbl-degree, while terminal stations such as Euston and Victoria are original to this list as a result of considering flows.
+6 out of 10 stations in this table also appear in @tbl-degree, while terminal stations such as Euston and Victoria are unique to this list.
 
 The **betweenness centrality** considering flows, given $T_{ij}$ as the number of flows from node $i$ to $j$, can be proposed as follows:
 
@@ -299,9 +301,9 @@ $$ {#eq-bet-weighted}
 
 : Stations with the highest weighted betweenness centrality. {#tbl-weighted-betweenness}
 
-6 out of 10 stations are in the ranking for the unweighted betweenness centrality [@tbl-betweenness]. Because of the similarity between the weighted degree centrality, 9 out of 10 stations in @tbl-weighted-betweenness appear in @tbl-weighted-degree as well. 
+6 out of 10 stations are also highly ranked in the unweighted measure in @tbl-betweenness. Because of the similarity between the weighted degree centrality, 9 out of 10 stations in @tbl-weighted-betweenness appear in @tbl-weighted-degree as well. 
 
- The stations with high harmonic weighted closeness centrality values are shown in @tbl-weighted-closeness.
+The stations with high harmonic weighted closeness centrality values are shown in @tbl-weighted-closeness.
 
 | Rank | Station | Harmonic Weighted Closeness Centrality |
 | ---: | :--- | ---: |
@@ -322,7 +324,7 @@ These stations are not geographically concentrated compared to @tbl-closeness. T
 
 #### Impact Measures
 
-We will consider the need for adjusting the impact measures in @tbl-delta-performance for the weighted network. When considering the weight, each measure should be adjusted as summarised in @tbl-delta-performance-weighted.
+We have considered the need for adjusting the impact measures in @tbl-delta-performance for the weighted network. When considering the weight, each measure should be adjusted as summarised in @tbl-delta-performance-weighted.
 
 | Original Performance Measure | Weighted Equivalent | Explanation |
 | --- | --- | --- |
@@ -349,7 +351,7 @@ $$ {#eq-weighted-efficiency}
 
 #### Node Removal
 
-The best performing methodology in @sec-weighted is the sequential removal using betweenness centrality. Using the unweighted and weighted variants, the sequential removal removes stations shown in @tbl-node-removal-betweenness.
+The best performing methodology in @sec-weighted was the sequential removal using betweenness centrality. The unweighted and weighted variants removes stations shown in @tbl-node-removal-betweenness.
 
 | Rank | Unweighted | Weighted |
 | ---: | :--- | :--- |
@@ -390,7 +392,7 @@ $$
 T_{ij} = K O^{\alpha}_i D^{\gamma}_j f(c_{ij}) \quad \left (K = \frac{T}{\sum_i \sum_j O^{\alpha}_i D^{\gamma}_j f(d_{ij})} \right)
 $$ {#eq-unconst}
 
-K is determined so that the total flow $T$ is preserved. The unconstrained model is used when there is information on the total amount of journeys but no detailed information is available.
+$K$ is determined so that the total flow $T$ is preserved. The unconstrained model is used when there is information on the total amount of journeys but no detailed information is available.
 
 The **singly constrained model** constrains the total number of observations for each component at the origin or the destination. The **origin constrained model**, shown in @eq-orig, is a singly constrained model that fixes the total number of journeys at the origin.
 
@@ -547,18 +549,18 @@ In order to examine flow change and to compare between scenarios, measurements i
 
 For each scenario, values for these measurements are calculated as shown in @tbl-measure-scenarios. 
 
-| Scenario | $T_{\text{diff}}$|  | $\bar{\delta}$ [m] |
+| Scenario | $T_{\text{diff}}$|  $T_{\text{diff}} / T$ [%] | $\bar{\delta}$ [m] |
 | --- | ---: | ---: | ---: |
-| **Original Simulation** |  | **Total flows: 1,542,283** | **8,583** |
-| Scenario A | 18,193 | (1.2 % of total flows) | 8,579 |
-| Scenario B1 | 346,503 | (22.47 % of total flows) | 6,030 |
-| Scenario B2 | 1,222,191 | (79.25 % of total flows) | 1,613 |
+| *Original Simulation* | - | *(Total flows: 1,542,283)* | *8,583* |
+| Scenario A | 18,193 | 1.2 % of total flows | 8,579 |
+| Scenario B1 | 346,503 | 22.47 % of total flows | 6,030 |
+| Scenario B2 | 1,222,191 | 79.25 % of total flows | 1,613 |
 
 : Impact measurements for each scenario. {#tbl-measure-scenarios tbl-colwidths="[30,20,35,15]"}
 
 $T_{\text{diff}}$ and $\bar{\delta}$ both indicate that scenario B2 had the largest impact on the number of flows, and scenario A the least impactful. 
 
-The intervention to the travel cost (scenario B) directly impacts all OD pairs, while the reduction of jobs in one area (scenario A) only impacts journeys that end at the station affected. This different nature of the interventions dictate the magnitude of change it causes; thus scenario B has a larger impact on the flows on the network as a whole. 
+The intervention to the travel cost (scenario B) directly impacts all origin-destination pairs, while the reduction of jobs in one area (scenario A) only impacts journeys that end at the station affected. This different nature of the interventions dictate the magnitude of change it causes; thus scenario B has a larger impact on the flows on the network as a whole. 
 
 Recalling the impact of scenario A on Canary Wharf was a 39 % decrease in the total inflows, which falls between scenarios B1 and B2 in terms of $T_{\text{diff}}$. Even focusing on one station, it is rational to conclude scenario B2 has the largest impact.
 
@@ -567,7 +569,7 @@ Further analysis can be done using the actual changes in the underground fares a
 
 ---
 
-Word count: 2,861 words
+Word count: 2,994 words
 
 GitHub repository (as hyperlink): [Urban_Simulation_Report](https://github.com/sokimura39/Urban_Simulation_Report)
 
