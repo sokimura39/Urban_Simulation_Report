@@ -80,10 +80,10 @@ In the context of the underground network, the degree corresponds to the number 
 
 : Stations with the highest degree centrality. All stations tied at a degree of 6 are listed. {#tbl-degree tbl-colwidths="[10,40,50]"}
 
-**Betweenness centrality** is the number of shortest paths that run through the node or link. The betweenness centrality $x_i$ for node $i$ is calculated as 
+**Betweenness centrality** of a nodeis the number of shortest paths that run through. The betweenness centrality $x_i$ for node $i$ is calculated as 
 
 $$
-x_i = \sum_{st} \frac{n^i_{st}}{g_{st}}
+x_i = \sum_{s,t} \frac{n^i_{st}}{g_{st}}
 $$ {#eq-betweenness-centrality}
 
 where
@@ -96,7 +96,7 @@ n^i_{st} =
 \end{cases}
 $$
 
-and $g_{st}$ is the total number of geodesic paths from $s$ to $t$. This measure can be normalised by dividing by the number of origin-destination combinations between the other $n-1$ nodes: $(n-1)(n-2)/2$. High betweenness centrality on the underground shows it is on the shortest path between many pairs of stations, therefore many people are expected to pass it. The stations with the highest betweenness centrality are shown in @tbl-betweenness.
+and $g_{st}$ is the total number of geodesic paths from $s$ to $t$. When normalised by dividing by $(n-1)(n-2)/2$ (combinations between remaining nodes). High betweenness centrality on the underground shows it is on the shortest path between many pairs of stations, therefore many people are expected to pass it. The stations with the highest betweenness centrality are shown in @tbl-betweenness.
 
 | Rank | Station | Betweenness Centrality |
 | ---: | :--- | ---: |
@@ -113,15 +113,15 @@ and $g_{st}$ is the total number of geodesic paths from $s$ to $t$. This measure
 
 : Stations with the highest betweenness centrality. {#tbl-betweenness tbl-colwidths="[10,40,50]"}
 
-**Closeness centrality** is the inverse of $l_i$: the mean geodesic distance from the node to all other $n-1$ nodes. The closeness centrality $C_i$ is calculated as 
+**Closeness centrality** is the inverse of the mean geodesic distance from one node to other reachable $n_0$ nodes ($l_i$), scaled by the ratio of reachable nodes [@wasserman1994]. The closeness centrality $C_i$ is calculated as 
 
 $$
-C_i = \frac{1}{l_i} = \frac{n-1}{\sum_{j} d_{ij}}
+C_i = \frac{n_0-1}{n-1}\frac{1}{l_i} = \frac{n_0-1}{\sum_{j} d_{ij}}
 $$ {#eq-closeness-centrality}
 
 where $d_{ij}$ is the geodesic distance between nodes $i$ and $j$.
 
-A high closeness centrality indicates the station is within a short distance from all the other stations. These stations are assumed to be located within the city centre, as illustrated by the high-ranked stations in London shown in @tbl-closeness. These stations are concentrated in central London, including Charing Cross - where the 'distance to London' is measured from [@leatherdale2016].
+A high closeness centrality indicates the station is within a short distance from all the other stations. These stations are assumed to be located within the city centre, as the high-ranked stations clustered in central London shown in @tbl-closeness.
 
 | Rank | Station | Closeness Centrality [$\times 10^{-5}$] |
 | ---: | :--- | ---: |
@@ -136,26 +136,26 @@ A high closeness centrality indicates the station is within a short distance fro
 | 9 | Covent Garden | 7.806 |
 | 10 | Embankment | 7.799 |
 
-: Stations with the highest closeness centrality. {#tbl-closeness tbl-colwidths="[10,40,50]"}
+: Stations with the highest closeness centrality. Charing Cross is where the 'distance to London' is measured from [@leatherdale2016] - supporting that these stations are located in the city centre. {#tbl-closeness tbl-colwidths="[10,40,50]"}
 
 #### Impact Measures
 
 The delta centrality quantifies the change in performance of the network when a node is removed [@latora2007]. For a performance measure $P$ of the network $G$, the delta centrality $C^{\Delta}_i$ of node $i$ is defined as
 
 $$
-C^{\Delta}_i = \frac{\Delta P}{P} = \frac{P(G) - P(G')}{P(G)}
+C^{\Delta}_i = \frac{\Delta P}{P} = \frac{P(G) - P(G')}{P(G)} \quad (G': G \text{ after removing node }i)
 $$
 
-where $G'$ denotes the network where node $i$ is removed. The performance measures considered for calculating $C^{Delta}_i$ is summarised in @tbl-delta-performance. 
+The performance measures considered are summarised in @tbl-delta-performance. 
 
 | Performance Measure $P$ | Explanation |
 | --- | --- |
 | Size of Largest Connected Component (LCC) | The size of LCC shows the connectivity of the network. A smaller number indicates stations are disattached from the main network, leading to less connectivity. |
-| Network Efficiency | Efficiency measure proposed by @latora2001, calculated as $E(G) = \frac{1}{n(n-1)}\sum_{i \ne j} \frac{1}{d_{ij}}$. A high value indicates lower shortest path lengths between nodes. This measure is applicable for disconnected networks as well, unlike the average shortest path length. Since the `nx.global_efficiency()` function cannot incorporate edge length, a custom function was defined to calculate this value. |
+| Network Efficiency $E(G) = \frac{1}{n(n-1)}\sum_{i \ne j} \frac{1}{d_{ij}}$ | Efficiency measure proposed by @latora2001. A high value indicates lower shortest path lengths between nodes. This measure is applicable for disconnected networks as well, unlike the average shortest path length. Since the `nx.global_efficiency()` function cannot incorporate edge length, a custom function was defined to calculate this value. |
 
 : Performance measures considered for delta centrality. {#tbl-delta-performance tbl-colwidths="[30,70]"}
 
-These measures can be applied to any transport network. For instance, the impact of closures of stations and lines of the New York City's subway network after the September 11 attacks [@wyatt2002; @paaswell2012] is one applicable example outside London. The measures are applicable to any network, as long as the weight of the edges indicate physical or perceptual distance between nodes.
+This can be applied to any transport network - closures of NYC subway stations after 9/11 [@wyatt2002; @paaswell2012] is one applicable example outside London. It is also applicable for other networks as well to assess the connectivity and the performance of the network.
 
 #### Node Removal
 
@@ -225,27 +225,39 @@ The change in performance measures caused by the node removal is as illustrated 
 
 ##### Discussions {.unnumbered}
 
-Based on the two performance measures, the sequential removal is more effective to study resilience of the network. Since the characteristics of the network change after removing the first nodes, the crucial node may be different when re-evaluated based on the remaining network. The non-sequential removal using closeness centrality illustrates this, where many stations in a small area is removed; the removal of the first few nodes have significantly lowered the importance of this area, and the impact of further removal of stations are minimal. By assessing the importance of node at each step, the sequential removal is capable of identifying the hidden nodes that gain importance when the most obvious nodes have been removed, which may need improvements if we were to prepare for emergency situations.
+The sequential removal is more effective to study resilience of the network compared to non-sequential removal. Since the characteristics of the network change upon node removal, the crucial node may also change when re-evaluating the remaining network. By assessing the importance of node at each step, the sequential removal is capable of identifying nodes that gain importance after the initial deformation.
 
-Comparing between the centrality measures, removal based on the betweenness centrality has the largest impact on performance. Since a high betweenness centrality indicates high number of flows through the node, removing this node will force the flows to divert using different routes, requiring a higher cost to reach the destination. Given that connecting two points is the fundamental function of a transport network, the betweenness centrality directly addresses the importance regarding this aspect. It is worth noting that the degree centrality has identified the first few stations that impact the overall performance, and further investigation is required to identify the cause.
+Node removal based on the betweenness centrality has the largest impact on performance. Since a high betweenness centrality indicates high flow through the node, removing this node will force a large number of flows to divert using different routes. Interestingly, the degree centrality has identified the first few stations with larger impact, and further investigation is required to identify whether this is a general trend or specific to the Underground network.
 
-For the comparison of the impact measure, the efficiency appears to be a better evaluation of the performance. The size of LCC is unable to assess the impact of station removal unless it disconnects nodes from the network, whereas the efficiency can assess the change within a connected network, thus the impact is more sensitively reported.
+When comparing between impact measures, the efficiency is a better evaluation of the performance. The size of LCC is unable to assess the impact of station removal unless it disconnects nodes from the network, whereas the efficiency can assess the change within a connected network, thus the impact is more sensitively reported. Comparing the observations, the LCC shows little change except when removing hub stations that disconnect branches, where efficiency gives a continuous evaluation of performance.
 
 ### Flows: Weighted Network {#sec-weighted}
 
-In this section, a weighted network considering the passenger flows is analysed. Based on the Transport for London NUMBAT data [@transportforlondon2021], the morning peak flows have been assigned to the shortest path between nodes considering the length of each edge. 
+In this section, a weighted network considering the passenger flows is analysed. Based on the morning peak origin-destination data from @transportforlondon2021, flows have been assigned to the shortest path between nodes considering the length of each edge. 
 
 #### Centrality Measures
 
-First, whether centrality measures in @sec-topological need adjustments to be applied to the weighted network is discussed.
+First, we have considered whether centrality measures in @sec-topological need adjustments to be applied to the weighted network. The adjustments made for the weighted measures are summarised in @tbl-weighted-centrality-measures.
 
-Although the **degree centrality** as the number of connected stations is still valid for a weighted network without amendments, a flow-weighted version of degree centrality [@eq-degree-centrality] can be defined as 
+| Centrality measure | Weighted measure | Explanation |
+| :--- | :--- | :--- |
+| Degree Centrality | Strength $s_i = \sum_j A_{ij}w_{ij}$ | $w_{ij}$ is the flow on link between nodes $i$ and $j$. A measure discussed as the strength $s_i$ in @lee2008, quantifying the amount of flow on edges connected to the node. This measure is highly related to the betweenness centrality, since they both address the flows involving the node. The unweighted degree centrality is a valid measure in a weighted network as well. |
+| Betweenness Centrality | Weighted Betweenness Centrality $x'_i = \sum_{st} \frac{n^i_{st}}{g_{st}}T_{st}$ | $T_{ij}$ as the number of flows from $i$ to $j$. The betweenness centrality, weighting each origin-destination pair by the number of flows. |
+| Closenese Centrality | Harmonic Weighted Closeness Centrality $C''_i = \frac{1}{n-1} \sum_j \frac{1}{u_{ij}}$ | When considering the inverse of flows as the **social distance** between nodes, $u_{ij}$ is defined as the smallest social distance between nodes $i$ and $j$. A harmonic mean was used to account for edges with zero flow (infinite social distance). Simply giving the weight $T_{ij}$ in @eq-closeness-centrality as $C'_i = \frac{\sum_j T_{ij}}{\sum_j T_{ij}d_{ij}}$ gives the average distance travelled by the user of the station, which is difficult to interpret from the perspective of importantness. ($C'_i$ may be larger in the city centre attracting people from longer distances, or at the outskirts where passengers need to travel long distances in general.) |
+
+: Adjustments made for each centrality measure on the weighted network. {#tbl-weighted-centrality-measures tbl-colwidths="[20,25,55]"}
+
+Comparing the weighted degree and betweenness centralities in @tbl-weighted-centrality-measures, their difference lies in whether it accounts for journeys that originate or terminate at the node in question, and whether it double-counts flows that pass through the node. Thus, their relationship can be expressed as  
 
 $$
-s_i = \sum_j A_{ij}w_{ij} \quad (w_{ij}: \text{flow on link between nodes } i \text{ and } j)
-$$ {#eq-deg-weighted}
+s_i = 2x'_i + (O_i + D_i - T_{ii})
+$$ {#eq-bet-weighted2}
 
-which is a measure discussed as the strength $s_i$ in @lee2008. This quantifies the amount of flow that passes through each node, highly related to the weighted betweenness centrality. The stations with the highest weighted degree centrality is shown in @tbl-weighted-degree.
+where $O_i, D_i$ is the number of flows originating and terminating at node $i$.
+
+Based on the above measures, we now examine the stations with high weighted centrality measures.
+
+The stations with the highest weighted degree centrality is shown in @tbl-weighted-degree.
 
 | Rank | Station | Weighted Degree (Strength) $(\times 10^5)$ |
 | ---: | :--- | ---: |
@@ -270,13 +282,7 @@ $$
 x'_i = \sum_{st} \frac{n^i_{st}}{g_{st}}T_{st}
 $$ {#eq-bet-weighted}
 
-The strength being the sum of flows on links and the weighted beweenness centrality calculating flows that passes through (and considering that these are counted twice in $s_i$), these two centrality measures fulfill the relationship
-
-$$
-s_i = 2x'_i + (O_i + D_i - T_{ii})
-$$ {#eq-bet-weighted2}
-
-where $O_i, D_i$ is the number of flows originating and terminating at node $i$. The stations with the highest values are calculated as shown in @tbl-weighted-betweenness.
+ The stations with the highest weighted betweenness centrality values are calculated as shown in @tbl-weighted-betweenness.
 
 | Rank | Station | Weighted Betweenness Centrality $(\times 10^5)$ |
 | ---: | :--- | ---: |
@@ -295,13 +301,7 @@ where $O_i, D_i$ is the number of flows originating and terminating at node $i$.
 
 6 out of 10 stations are in the ranking for the unweighted betweenness centrality [@tbl-betweenness]. Because of the similarity between the weighted degree centrality, 9 out of 10 stations in @tbl-weighted-betweenness appear in @tbl-weighted-degree as well. 
 
-When considering the **closeness centrality** with regards to the number of flows, considering $T_{ij}$ in @eq-closeness-centrality as $C'_i = \frac{\sum_j T_{ij}}{\sum_j T_{ij}d_{ij}}$ returns the average distance travelled by the user of the station. This figure is difficult to relate to the importantness, as it may be larger in the city centre attracting people from longer distances, or at the outskirts where passengers need to travel long distances in general. Instead, by defining the social distance of links as the inverse of the flows, and $u_{ij}$ as the shortest social distance between nodes $i$ and $j$ (and considering $u_{ij}$ diverges to infinity when no flows between stations), the harmonic weighted closeness centrality of the social distance
-
-$$
-C''_i = \frac{1}{n-1} \sum_j \frac{1}{u_{ij}}
-$$
-
-is the weighted equivalent of the closeness centrality. The stations with high values are shown in @tbl-weighted-closeness.
+ The stations with high harmonic weighted closeness centrality values are shown in @tbl-weighted-closeness.
 
 | Rank | Station | Harmonic Weighted Closeness Centrality |
 | ---: | :--- | ---: |
@@ -318,13 +318,20 @@ is the weighted equivalent of the closeness centrality. The stations with high v
 
 : Stations with the highest weighted harmonic closeness centrality. {#tbl-weighted-closeness}
 
-These stations are not geographically concentrated in the west end compared to @tbl-closeness. Terminal stations with high originating or terminating journeys, or stations connected by high-flowing edges are highly ranked in this measure. King's Cross St. Pancras and Oxford Circus are the only stations that appear in both @tbl-closeness and @tbl-weighted-closeness. 
+These stations are not geographically concentrated compared to @tbl-closeness. Terminal stations with high originating or terminating journeys, or stations connected by high-flowing edges are highly ranked in this measure. King's Cross St. Pancras and Oxford Circus are the only stations that appear in both @tbl-closeness and @tbl-weighted-closeness. 
 
 #### Impact Measures
 
-We will consider the need for adjusting the impact measures in @tbl-delta-performance for the weighted network. 
+We will consider the need for adjusting the impact measures in @tbl-delta-performance for the weighted network. When considering the weight, each measure should be adjusted as summarised in @tbl-delta-performance-weighted.
 
-The size of LCC is valid in a weighted network, although unable to consider the flows. If the weight of the edges are to be incorporated, the ratio of journeys that can be completed within a connected component $J(G)$ can be proposed, calculated as:
+| Original Performance Measure | Weighted Equivalent | Explanation |
+| --- | --- | --- |
+| Size of LCC | Ratio of journeys within same connected component $J(G)$ | Drawing the principle of LCC by considering whether two nodes are within the same connected component. Weighting this by the flows between each node pair, resulting in measuring the ratio of journeys that can be completed within a connected component. Note that the size of LCC is also valid in a weighted network, although unable to consider flows. |
+| Network Efficiency | Weighted Network Efficiency $E'(G)$ | Each distance between node pairs weighted according to the number of passengers travelling between them, calculating the average inverted distance of journeys. |
+
+: Adjustments for the impact measures for a weighted network. {#tbl-delta-performance-weighted tbl-colwidths="[20,20,60]"}
+
+$J(G)$ and $E'(G)$ are calculated as shown in @eq-ratio-connected-journeys and @eq-weighted-efficiency respectively.
 
 $$
 J(G) = \frac{\sum_{i \ne j} (T_{ij} \delta_{ij})}{T} \quad
@@ -334,17 +341,15 @@ J(G) = \frac{\sum_{i \ne j} (T_{ij} \delta_{ij})}{T} \quad
 0 \text{ otherwise}
 \end{cases}
 \right)
-$$
-
-where $T$ is the total flows. For the network efficiency, each of the distances should be weighted according to the number of passengers who travel between the two nodes. The efficiency should also account for the flows between points. The equation in @tbl-delta-performance should be adjusted as:
+$$ {#eq-ratio-connected-journeys}
 
 $$
 E(G) = \frac{1}{T} \sum_{i \ne j} \frac{T_{ij}}{d_{ij}}
-$$
+$$ {#eq-weighted-efficiency}
 
 #### Node Removal
 
-The best performing methodology in @sec-weighted is the sequential removal using betweenness centrality. Using the unweighted and weighted betweenness centrality, the sequential removal of the highest centrality removes the stations shown in @tbl-node-removal-betweenness.
+The best performing methodology in @sec-weighted is the sequential removal using betweenness centrality. Using the unweighted and weighted variants, the sequential removal removes stations shown in @tbl-node-removal-betweenness.
 
 | Rank | Unweighted | Weighted |
 | ---: | :--- | :--- |
@@ -354,11 +359,11 @@ The best performing methodology in @sec-weighted is the sequential removal using
 
 : Stations removed using the highest unweighted and weighted betweenness centrality. Stations for the unweighted centrality is extracted from @tbl-removed-stations-2. {#tbl-node-removal-betweenness}
 
-The changes in the performance using $J(G), E(G)$ for each strategy are shown in @fig-weighted-performance. Comparing these results, removing stations based on the unweighted betweenness centrality measure has the most impact on the network. The weighted efficiency of the network has dropped significantly, indicating journeys are taking longer or impossible to complete with the nodes-removed network. Thus, the stations that have the most impact on the performance of the network are: Bank and Monument, King's Cross St. Pancras, and Stratford.
+The changes in the performance using $J(G), E(G)$ for each strategy are shown in @fig-weighted-performance. Comparing these results, removing stations based on the unweighted measure has the most impact on the network. The weighted efficiency has dropped significantly, indicating journeys are taking longer or disconnected in the nodes-removed network. Thus, the stations that have the most impact on the performance of the network are: Bank and Monument, King's Cross St. Pancras, and Stratford.
 
 ![Change in the performance measures as a result of node removal according to the weighted and unweighted betweenness centrality.](img/weighted_node_removal_measures.png){#fig-weighted-performance}
 
-The weighted strategy takes into account the flows of passengers, but did not outperform the unweighted strategy. One possible explanation is that the stations removed by the weighted strategy are located near the centre of the city and has alternatives that could operate without distorting the efficiency of the network, while unweighted strategy removes the suburban transit hub of Stratford that immediately disconnects branches from the largest component, having a high impact on the performance measures. A further investigation of comparison is necessary to further compare these strategies; one potential methodology is to continue removing more stations following each strategy.
+The weighted strategy takes into account the flows of passengers, but did not outperform the unweighted strategy. One possible explanation is due to the characteristics of the stations removed: the weighted strategy removes stations near the city centre with dense networks allowing for minimal diversions, while the unweighted strategy removes the suburban transit hub of Stratford that immediately disconnects branches, highly impacting performance measures. A further investigation is necessary for a more accurate comparison; continuing the removal may give additional insights.
 
 ## Part 2: Spatial Interaction Models
 
@@ -368,16 +373,16 @@ In the second part, we have analysed the morning-peak passenger flows of the Lon
 
 #### Family of Spatial Interaction Models
 
-The spatial interaction model is a methodology that predicts the flow between origin and destination from the amount of activity at both ends and the distance between them, drawing an analogy from Newton's law of gravity [@waddell2002]. Spatial interaction models are classified by the constraints cast on them deriving from actual observations; whether the amount of originating and terminating journeys of nodes are preserved.
+The spatial interaction model predicts the flow between origin and destination from the amount of activity at both ends and the distance between them, drawing an analogy from Newton's law of gravity [@waddell2002]. Spatial interaction models are classified by the constraints cast on them deriving from actual observations; whether the amount of originating and terminating journeys of nodes are preserved.
 
-The variables will be denoted as follows:
+In this section, the variables will be denoted as follows:
 
 - $T_{ij}$: estimated flow from station $i$ to $j$
 - $T$: total flow within a network, thus $T = \sum_{i,j} T_{ij}$
 - $d_{ij}$: distance between stations $i$ and $j$ - the cost function is a function of $d_{ij}$ hence denoted as $f(d_{ij})$
 - $O_i$, $D_j$: activity at the origin and destination that impacts the originating and terminating flows
 
-The $O_i$ and $D_j$ show the amount of activity that influence the number of journeys that originate and terminate at the node, respectively. In this model, the values themselves are the number of total journeys from / to the node. As the interpretation of the variables considering we are analysing the data for the morning peak, $O_i$ corresponds to the population that uses the station and $D_j$ to the number of jobs.
+In this model,  $O_i$ and $D_j$ are the number of total journeys from / to the node. As we are analysing the data for the morning peak, $O_i$ corresponds to the population that uses the station and $D_j$ to the number of jobs around the node.
 
 The **unconstrained model** only constrains the model with matching the total flows with the observed value, calculated as:
 
@@ -385,9 +390,9 @@ $$
 T_{ij} = K O^{\alpha}_i D^{\gamma}_j f(c_{ij}) \quad \left (K = \frac{T}{\sum_i \sum_j O^{\alpha}_i D^{\gamma}_j f(d_{ij})} \right)
 $$ {#eq-unconst}
 
-K is determined so that the total flow $T$ is preserved. This is used when there is information on the total amount of journeys but no detailed information is available.
+K is determined so that the total flow $T$ is preserved. The unconstrained model is used when there is information on the total amount of journeys but no detailed information is available.
 
-The **singly constrained model** constrains the total number of observations for each component at the origin or the destination. The origin constrained model, shown in @eq-orig, fixes the total number of journeys at the origin.
+The **singly constrained model** constrains the total number of observations for each component at the origin or the destination. The **origin constrained model**, shown in @eq-orig, is a singly constrained model that fixes the total number of journeys at the origin.
 
 $$
 T_{ij} = A_i O_i D^{\gamma}_j f(d_{ij})
@@ -399,9 +404,9 @@ $$
 \sum_j T_{ij} = O_i \therefore A_i = \frac{1}{\sum_j D^{\gamma}_j f(d_{ij})}
 $$ {#eq-orig-ai}
 
-This is a widely used model for spatial interaction in various use-cases, including deciding the location and size for retail developments based on the residential distribution within a certain area [@haynes2020].
+This model is widely used for flow prediction in various use-cases, including deciding the location and size for retail developments based on the residential distribution within a certain area [@haynes2020].
 
-Similarly, the **destination constrained model** constrains the total at the destination, calculated by @eq-dest.
+Similarly, the **destination constrained model** constrains the total at the destination, where the flows are calculated by @eq-dest.
 
 $$
 T_{ij} = O^{\alpha}_i B_j D_j f(c_{ij}) \quad
@@ -416,9 +421,7 @@ $$
 T_{ij} = A_i O_i B_j D_j \exp(-\beta d_{ij})
 $$ {#eq-dbl}
 
-This is used in the transport planning context, in the trip distribution process in the 4-step method of transportation prediction where origins and destinations are decided based on activity of both ends [@robinson2011].
-
-In this report, we will use the Poisson model [@flowerdew1982] to fit this gravity model.
+This is used in the transport planning context as a method of trip distribution in the 4-step method, estimating flows based on activity of both ends [@robinson2011]. 
 
 #### Calibration of Parameters
 
@@ -433,13 +436,13 @@ For the calibration process, we will first use the doubly constrained model to e
 
 ##### Calibration of the cost function {.unnumbered}
 
-The Poisson model of the doubly constrained model @eq-dbl is written as:
+The Poisson model [@flowerdew1982] of the doubly constrained model @eq-dbl is written as:
 
 $$
 \ln(T_{ij}) = \ln A_i + \ln O_i + \ln B_j + \ln D_j + \ln f(d_{ij}) \\
 $$
 
-We will compare the negative exponential and inverse power relationships as the cost function $f(d_{ij})$.
+For the cost function $f(d_{ij})$, the negative exponential and inverse power functions are compared (@eq-cost-function) to determine the better performing relationship and the optimal parameter $\beta$. The results are shown in @tbl-beta.
 
 $$
 f(d_{ij}) = 
@@ -447,18 +450,16 @@ f(d_{ij}) =
 \exp(-\beta d_{ij}) \text{ (Negative Exponential)} \\
 d^{-\beta}_{ij}  \text{ (Inverse Power)} 
 \end{cases}
-$$
-
-For each cost function, we have run the Poisson Regression to calculate the optimal $\beta$. 
+$$ {#eq-cost-function}
 
 | Cost Function | Parameter $\beta$ | $R^2$ value |
 | --- | --- | --- |
 | Negative exponential $f(d_{ij}) = \exp(-\beta d_{ij})$ | $\beta = 1.543 \times 10^{-4}$ | $R^2 = 0.4979$ |
 | Inverse Power $f(d_{ij}) = d^{-\beta}_{ij}$ | $\beta = 9.096 \times 10^{-1}$ | $R^2 = 0.4077$ |
 
-: Comparison of results for the doubly constrained model using inverse power and negative exponential cost functions.
+: Comparison of results for the doubly constrained model using inverse power and negative exponential cost functions. {#tbl-beta}
 
-From these results, we have seen the negative exponential model (@eq-beta) for the cost function has a better fit to the observed flows. 
+Since the negative exponential model (@eq-beta) has a better fit to the observed flows, this is used in the rest of the analysis.
 
 $$
 f(d_{ij}) = \exp(-\beta d_{ij}) \quad (\beta = -1.543 \times 10^{-4})
@@ -466,13 +467,13 @@ $$ {#eq-beta}
 
 ##### Calibration of $\gamma$ {.unnumbered}
 
-Since the origin-constrained model was used for the analysis of the scenarios, the gamma variable introduced in @eq-orig must be calibrated before applying to the new scenarios. @eq-orig can be transformed into a Poisson Model as follows:
+Since the origin-constrained model was used for the analysis of the scenarios, the gamma variable must be calibrated before applying to the new scenarios. @eq-orig is transformed into a Poisson Model as follows:
 
 $$
 \ln(T_{ij}) = \ln A_i + \ln O_i + \gamma \ln D_j + \ln f(d_{ij}) \\
 $$ {#eq-orig-poisson}
 
-$\gamma$ with the highest R-squared value for estimating the original flow was used, resulting as follows:
+$\gamma$ with the highest R-squared value was used, resulting as follows:
 
 $$
 \gamma = 7.556 \times 10^{-1} \quad (R^2 = 0.4680)
@@ -493,31 +494,31 @@ Since scenario A involves the change in the characteristics of the destination, 
 
 #### Scenario A
 
-We have first decreased the number of jobs at Canary Wharf by 50%, from the original 58,772 to 29,386. We have observed how the destination of commuters changed in reaction to this decrease using the origin-constrained model (@eq-orig-poisson). First, we reduced the number of jobs at Canary Wharf from $D_j$ to $D'_j$ by 50 %, thus
+We have first decreased the number of jobs at Canary Wharf by 50% from $D_j$ to $D'_j$ (@eq-halfdj). We have observed how the destination of commuters changed in reaction to this decrease using the origin-constrained model (@eq-orig-poisson).
 
 $$
 D'_j = \frac{D_j}{2}
-$$
+$$ {#eq-halfdj}
 
-Using @eq-orig-ai, $A_i$ needs to be adjusted, thus the new parameter $A'_i$ fulfilling @eq-orig-ai-adj. This ensures the total number of flows that originate from each station is conserved.
+$A_i$ needs to be adjusted so that the new parameter $A'_i$ fulfills @eq-orig-ai-adj, ensuring the total flows that originate from each station is conserved.
 
 $$
 A'_i = \frac{1}{\sum_j D'^{\gamma}_j f(d_{ij})}
 $$ {#eq-orig-ai-adj}
 
-Finally, the new flows $T'_{ij}$ can be calculated using the relationship shown below, derived from @eq-orig.
+Finally, the new flows $T'_{ij}$ is estimated as shown below, derived from @eq-orig.
 
 $$
 T'_{ij} = A'_i O_i D'^{\gamma}_j \exp(-\beta d_{ij})
 $$
 
-A significant drop in the number of journeys terminating at Canary Wharf was observed, from 47,690 in the original simulation to 29,496 (61.9 % of original flow) in scenario A. As observable from @fig-OD-scenarioA, the decrease in the flows to Canary Wharf occured evenly among all origins, and been redistributed into other destinations.
+As a result, a significant drop in the number of journeys terminating at Canary Wharf was observed, from 47,690 in total to 29,496 (61.9 % of original flow). As observable from @fig-OD-scenarioA, the decrease in the flows to Canary Wharf occured evenly among all origins, and were redistributed into other destinations.
 
 ![Comparison of the flows of OD pairs the original simulation and the flows under scenario A.](img/OD_change_scenarioA.png){#fig-OD-scenarioA}
 
 #### Scenario B
 
-2 scenarios for the change in the cost were considered. The parameters $\beta_1, \beta_2$ for the two scenarios B1 and B2 were modified as shown in @eq-paramsB and illstrated in @fig-paramsB. 
+We have considered the increase of cost in this scenario, using two scenarios B1 and B2 each modifying the cost functions $\beta_1, \beta_2$ as shown in @eq-paramsB and illstrated in @fig-paramsB. 
 
 $$
 \begin{cases}
@@ -527,22 +528,22 @@ $$
 \quad (\beta = -1.543 \times 10^{-4})
 $$ {#eq-paramsB}
 
-![Distance decay function for the original scenario and the two modified scenarios. This indicates the cost for travelling a fixed distance will be equivalent to that of travelling twice (B1) or 10 times (B2) the distance in the original model.](img/dist_decay.png){#fig-paramsB}
+![Distance decay function for the original and modified scenarios. The cost is equivalent to travelling twice (B1) or 10 times (B2) the distance in the original model.](img/dist_decay.png){#fig-paramsB}
 
-The new flows for this scenario was calcuated, following the same parameter-recalibration process in scenario A. The flows between origin-destination pairs plotted by distance of journeys, are shown in @fig-OD-scenarioB. As the $\beta$ increases, the longer distance journeys are disencouraged, and the distribution of the distance of journeys become negatively skewed. 
+The new flows for this scenario was calcuated following the same parameter-recalibration process in scenario A. The flows between origin-destination pairs plotted by distance of journeys are shown in @fig-OD-scenarioB. As the $\beta$ increases, the longer distance journeys have lower frequency compared to the original scenario. 
 
 ![Comparison of the relationship between the distance and the number of flows for scenario B and the original model. Raising the cost function results in a negatively skewed distance distribution.](img/OD_change_scenarioB.png){#fig-OD-scenarioB}
 
 #### Discussion
 
-In order to examine the changes that occured and compare the impact of different scenarios, measurements in @tbl-measurements were calculated.
+In order to examine flow change and to compare between scenarios, measurements in @tbl-measurements were calculated.
 
 | Measurement | Explanation |
 | :--- | :--- |
-| Quantity of change in destination $T_{\text{diff}} = \frac{\sum_{i,j} |T'_{ij} - T_{ij}|}{2}$ | The number of flows that have different destination compared to the original scenario. A larger number of change in destination indicate larger impact on the movement of people within the underground network. |
+| Quantity of change in destination $T_{\text{diff}} = \frac{\sum_{i,j} |T'_{ij} - T_{ij}|}{2}$ | The number of flows that have different destinations than the original scenario. ($T'_{ij}$ is the number of journeys from station $i$ to $j$ under the scenario.) A larger change in destinations indicate larger impact on the movement of people within the underground network. |
 | Mean distance of journeys $\bar{\delta} = \frac{\sum_{i,j}\left(T_{ij}d_{ij}\right)}{T}$ | The mean distance of all journeys simulated in each scenario. A larger change in the distance compared to the original simulation indicate larger impact. |
 
-: Measurements consider to quantify the change in flows for each scenario. $T'_{ij}$ is the number of journeys from station $i$ to $j$ under the scenario. {#tbl-measurements tbl-colwidths="[30,70]"}
+: Measurements considered to quantify the change in flows for each scenario.  {#tbl-measurements tbl-colwidths="[30,70]"}
 
 For each scenario, values for these measurements are calculated as shown in @tbl-measure-scenarios. 
 
@@ -553,17 +554,20 @@ For each scenario, values for these measurements are calculated as shown in @tbl
 | Scenario B1 | 346,503 | (22.47 % of total flows) | 6,030 |
 | Scenario B2 | 1,222,191 | (79.25 % of total flows) | 1,613 |
 
-: Value of measurements for each scenario. {#tbl-measure-scenarios tbl-colwidths="[30,20,35,15]"}
+: Impact measurements for each scenario. {#tbl-measure-scenarios tbl-colwidths="[30,20,35,15]"}
 
-The number of destinations changed and the change in the mean distance both indicate that scenario B2 had the largest impact on the number of flows, and scenario A being the least impactful. 
+$T_{\text{diff}}$ and $\bar{\delta}$ both indicate that scenario B2 had the largest impact on the number of flows, and scenario A the least impactful. 
 
-The intervention to the travel cost (scenario B) directly impacts all OD pairs, while the reduction of jobs in one area (scenario A) only impacts journeys that end at the station affected. This different nature of the interventions dictate the magnitude of change it causes; thus scenario B has a larger impact on the flows on the network as a whole. Recalling the impact of scenario A on Canary Wharf was a 39 % decrease in the total inflows, this figure falls between scenarios B1 and B2 in terms of $T_{\text{diff}}$. Since $\bar{\delta}$ remains unchanged the impact on Canary Wharf is difficult to compare between scenarios A and B1, but we can conclude scenario B2 has the largest impact even if the focus is on Canary Wharf. 
+The intervention to the travel cost (scenario B) directly impacts all OD pairs, while the reduction of jobs in one area (scenario A) only impacts journeys that end at the station affected. This different nature of the interventions dictate the magnitude of change it causes; thus scenario B has a larger impact on the flows on the network as a whole. 
 
-To conclude, a drastic impact on the cost function has more impact throughout the network compared to a large change in the demand in a particular area. Impact of the actual changes in the underground fares that occured should be investigated to compare with the results of our model.
+Recalling the impact of scenario A on Canary Wharf was a 39 % decrease in the total inflows, which falls between scenarios B1 and B2 in terms of $T_{\text{diff}}$. Even focusing on one station, it is rational to conclude scenario B2 has the largest impact.
+
+In conclusion, a drastic impact on the cost function has more impact throughout the network compared to a large change in the demand in a particular area. 
+Further analysis can be done using the actual changes in the underground fares as a natural experiment, comparing with predicted results in a replicated scenario.
 
 ---
 
-Word count: x words
+Word count: 2,861 words
 
 GitHub repository (as hyperlink): [Urban_Simulation_Report](https://github.com/sokimura39/Urban_Simulation_Report)
 
